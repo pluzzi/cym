@@ -1,0 +1,83 @@
+
+<div class="row-fluid justify-content-center">
+    <div class="col-md-12">
+        <div class="card shadow bg-light">
+            <div class="card-title display inline">
+                <div class="card-header text-align-center">
+                    Apertura de Fondo Fijo
+                    <button class="btn btn-danger btn-sm m-0 float-end "  (click)="home()" data-bs-toggle="tooltip" data-bs-placement="top" title="Salir"> 
+                        <i class="fa fa-sign-out-alt"></i>
+                    </button>
+                </div>
+            </div>   
+            <div class="card-body">
+                               
+                <div class="row">
+                    
+                    <div class="input-group">
+
+                        <div class="input-group input-group-sm mb-1 mr-1 size-moneda">
+                            <span class="input-group-text">Usuario:</span>
+                            <select class="form-control" (change)="getPlanilla()" [(ngModel)]="usuarioSelected">
+                                <option [ngValue]="u.codigo" *ngFor="let u of usuarios">{{u.nombre}}</option>
+                            </select>
+                        </div>
+                        <div class="input-group input-group-sm mb-1 size-valores">
+                            <span class="input-group-text">Planilla:</span>
+                            <input class="form-control" [(ngModel)]="numeroPlanilla">
+                        </div>
+                        <div class="input-group input-group-sm mb-1 mr-1 size-fecha">
+                            <span class="input-group-text" id="inputGroup-sizing-sm">Fecha de Apertura:</span>
+                            <input  type="date" 
+                                    class="form-control" 
+                                    [ngModel]="fecha | date:'yyyy-MM-dd' : 'UTC'"  
+                                    (ngModelChange)="setFecha($event)"  
+                                    >
+                        </div>
+                        
+                        
+                        <button class="btn btn-success btn-sm size-button mr-1"  (click)="getApertura()" data-bs-toggle="tooltip" data-bs-placement="top" title="Apertura"> 
+                            <i class="fa fa-door-open"></i>
+                        </button>
+                        <button class="btn btn-primary btn-sm size-button mr-1" (click)="edit()" data-bs-toggle="tooltip" data-bs-placement="top" title="Modificar"> 
+                            <i class="fa fa-edit"></i>
+                        </button>
+                        <button class="btn btn-danger btn-sm size-button mr-1" (click)="trash()" data-bs-toggle="tooltip" data-bs-placement="top" title="Eliminar"> 
+                            <i class="fa fa-trash"></i>
+                        </button>
+                        <button class="btn btn-secondary btn-sm size-button mr-1" (click)="limpiar()" data-bs-toggle="tooltip" data-bs-placement="top" title="Limpiar"> 
+                            <i class="fa fa-eraser"></i>
+                        </button>
+                        
+                                              
+                    </div>
+                </div>
+                <div class="row mt-1">
+                    
+                    <div class="form-group mb-2">
+                        <button class="btn btn-secondary btn-sm float-end"  (click)="search()" data-bs-toggle="tooltip" data-bs-placement="top" title="Buscar"> 
+                            <i class="fa fa-search"></i>
+                        </button>
+                        <input style="width: 190px; height: 31px;" (keydown)="keyDown($event)" class="form-control float-end" placeholder="Buscar" [(ngModel)]="searchValue">
+                    </div>
+                </div>
+                <ag-grid-angular
+                    style="width: 100%; height: calc(100vh - 200px); "
+                    class="ag-theme-alpine "
+                    [rowData]="planillas"
+                    [columnDefs]="columnDefs"
+                    [defaultColDef]="defaultColDef"
+                    (gridReady)="onGridReady($event)"
+                    rowSelection='single'
+                    [rowHeight]="20"
+                    [getRowStyle]="getRowStyle"
+                    (selectionChanged)="onSelectionChanged($event)">
+                </ag-grid-angular>
+                            
+            </div>
+        
+                    
+        </div>
+    </div>
+</div>
+

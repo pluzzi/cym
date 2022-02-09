@@ -1,0 +1,8 @@
+.size-label{
+    width: 120px;
+}
+
+.disabled{
+    pointer-events: none;
+}
+

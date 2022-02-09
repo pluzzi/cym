@@ -1,0 +1,305 @@
+
+<div class="row-fluid justify-content-center">
+    <div class="col-md-12">
+        <div class="card shadow bg-light">
+            <div class="card-title display inline">
+                <div class="card-header text-align-center">
+                    Informe de Valores
+                    <button class="btn btn-danger btn-sm m-0 float-end "  (click)="home()" data-bs-toggle="tooltip" data-bs-placement="top" title="Salir"> 
+                        <i class="fa fa-sign-out-alt"></i>
+                    </button>
+                </div>
+            </div>   
+            <div class="card-body">
+                               
+                <div class="row">
+                    
+                    <div class="input-group">
+                        <div class="input-group input-group-sm mb-3 mr-1 size-fecha">
+                            <span class="input-group-text" id="inputGroup-sizing-sm">Desde:</span>
+                            <input  type="date" 
+                                    class="form-control" 
+                                    [ngModel]="desde | date:'yyyy-MM-dd' : 'UTC'"  
+                                    (ngModelChange)="setDesde($event)"  
+                                    aria-label="Sizing example input" 
+                                    aria-describedby="inputGroup-sizing-sm">
+                        </div>
+                        <div class="input-group input-group-sm mb-3 mr-1 size-fecha">
+                            <span class="input-group-text" id="inputGroup-sizing-sm">Hasta:</span>
+                            <input  type="date" 
+                                    class="form-control" 
+                                    [ngModel]="hasta | date:'yyyy-MM-dd' : 'UTC'"  
+                                    (ngModelChange)="setHasta($event)"  
+                                    aria-label="Sizing example input" 
+                                    aria-describedby="inputGroup-sizing-sm">
+                        </div>
+                        <div class="input-group input-group-sm mb-3 mr-1 size-moneda">
+                            <span class="input-group-text">Moneda:</span>
+                            <select class="form-control" [(ngModel)]="monedaSelected">
+                                <option [ngValue]="0">Todos</option>
+                                <option *ngFor="let t of tipos_moneda_banco_propio" [ngValue]="t.codigo">{{t.codigo}} - {{t.nombre}}</option>
+                            </select>
+                        </div>
+                        <div class="input-group input-group-sm mb-3 size-valores">
+                            <span class="input-group-text" id="inputGroup-sizing-sm">Valores:</span>
+                            <select class="form-control" [(ngModel)]="estadoSelected">
+                                <option [ngValue]="v.id" *ngFor="let v of valores">{{v.descripcion}}</option>
+                            </select>
+                        </div>
+                        
+                        
+                        
+                        <div class="form-check form-check-inline">
+                            <input class="form-radio-input mr-1" type="radio" value="1" [(ngModel)]="tipo" name="deposito-acreditacion">
+                            <label class="form-check-label" style="font-size: 13px;" for="inlineCheckbox1">Fecha Mov.</label>
+                        </div>
+                        <div class="form-check form-check-inline">
+                            <input class="form-radio-input mr-1" type="radio" value="2" [(ngModel)]="tipo" name="deposito-acreditacion">
+                            <label class="form-check-label" style="font-size: 13px;" for="inlineCheckbox2">Fecha Cheque</label>
+                        </div>
+                        <button class="btn btn-primary btn-sm size-button mr-1" (click)="getInformes()" data-bs-toggle="tooltip" data-bs-placement="top" title="Buscar"> 
+                            <i class="fa fa-search"></i>
+                        </button>
+                        <button class="btn btn-secondary btn-sm size-button mr-1" (click)="print()" data-bs-toggle="tooltip" data-bs-placement="top" title="Imprimir"> 
+                            <i class="fa fa-print"></i>
+                        </button>
+                        <button class="btn btn-success btn-sm size-button mr-1" (click)="exportar()" data-bs-toggle="tooltip" data-bs-placement="top" title="Exportar a Excel"> 
+                            <i class="fa fa-file-excel"></i>
+                        </button>
+                        
+                                              
+                    </div>
+                </div>
+                <div class="row mt-1">
+                    
+                    <div class="form-group mb-2">
+                        <button class="btn btn-secondary btn-sm float-end"  (click)="search()" data-bs-toggle="tooltip" data-bs-placement="top" title="Buscar"> 
+                            <i class="fa fa-search"></i>
+                        </button>
+                        <input style="width: 190px; height: 31px;" (keydown)="keyDown($event)" class="form-control float-end" placeholder="Buscar" [(ngModel)]="searchValue">
+                    </div>
+                </div>
+                <ag-grid-angular
+                    style="width: 100%; height: calc(100vh - 260px); "
+                    class="ag-theme-alpine "
+                    [rowData]="informeValores"
+                    [columnDefs]="columnDefs"
+                    [defaultColDef]="defaultColDef"
+                    (gridReady)="onGridReady($event)"
+                    rowSelection='single'
+                    [rowHeight]="20"
+                    [getRowStyle]="getRowStyle"
+                    (selectionChanged)="onSelectionChanged($event)"                    
+                    >
+                </ag-grid-angular>
+                <div class="row">
+                    <div class="col-md-12">
+                        <button class="btn btn-success  btn-sm size-button float-end mb-2 mt-2 mr-1" (click)="edit()" data-bs-toggle="tooltip" data-bs-placement="top" title="Modificar Valores"> 
+                            <i class="fa fa-edit"></i>
+                        </button>
+                    </div>
+
+                </div>
+            
+            </div>
+        
+                    
+        </div>
+    </div>
+</div>
+
+<div  id="print_reporte_valores" class="visibility">
+        
+    <div class="row text-align-right">
+        <strong>Fecha Emisión: {{fechaEmision | date: 'dd/MM/yyyy'}}</strong> 
+    </div>
+    <br>
+    
+    <div class="text-align-center ">
+        <strong>Informe de Valores</strong>
+    </div>
+    <br>
+    <div>
+        <strong>Desde: {{desde | date: 'dd/MM/yyyy'}}</strong> - <strong>Hasta: {{hasta | date: 'dd/MM/yyyy'}}</strong> 
+    </div>
+    <br>
+    <div>
+        <strong>Moneda: {{ getMonedaNombre()}}</strong> - <strong>Valores: {{ getValores() }}</strong> 
+    </div>
+    <br>
+    <div class="">
+        <table class="table border">
+            <thead class="border">
+                <tr class="border">
+                    <th class="border">Mon</th>
+                    <th class="border">F.Mov.</th>
+                    <th class="border">F.Cheque</th>
+                    <th class="border">Int.</th>
+                    <th class="border">Banco</th>
+                    <th class="border">Suc.</th>
+                    <th class="border">Plaza</th>
+                    <th class="border">Número</th>
+                    <th class="border">Cta</th>
+                    <th class="border">Importe</th>
+                    <th class="border">Estado</th>
+                    <th class="border">Cód.Cliente</th>
+                    <th class="border">Ingreso</th>
+                    <th class="border">Cód.Prov.</th>
+                    <th class="border">Egreso</th>
+                    <th class="border">Observaciones</th>
+                    
+                </tr>
+            </thead>
+            <tbody>             
+                <tr *ngFor="let r of dataPrint" class="border">
+                    <td class="font border">{{r.codigo}}</td>
+                    <td class="font border">{{r.fechaEmitido }}</td>
+                    <td class="font border">{{r.fechaCheque }}</td>
+                    <td class="font border">{{r.interno}}</td>
+                    <td class="fontSmall border">{{r.banco}}</td>
+                    <td class="font border">{{r.sucursal}}</td>
+                    <td class="font border">{{r.cp}}</td>
+                    <td class="font border text-align-right">{{r.cheque}}</td>
+                    <td class="font border">{{r.cuentaCc}}</td>
+                    <td class="font border text-align-right">{{r.importe}}</td>
+                    <td class="font border">{{r.estado}}</td>
+                    <td class="font border text-align-center">{{r.codigoCliente}}</td>
+                    <td class="border fontSmall">{{r.cliente}}</td>
+                    <td class="font border text-align-center">{{r.codigoProveedor}}</td>
+                    <td class="border fontSmall">{{r.proveedor}}</td>
+                    <td class="font border">{{r.observaciones}}</td>
+
+                </tr> 
+            </tbody>
+        </table>
+        <br>
+        <div class="row text-align-right margin-right2">
+            <strong>Total: {{total | number: '.2-2'}}</strong> 
+        </div>
+    </div>
+</div>
+
+
+
+
+<ng-template #modal let-modal>
+    <div class="modal-header">
+        <h5 class="modal-title text-align-center">Modificar Valores</h5>
+        <button type="button" class="btn-close" (click)="modal.dismiss('Cross click')"></button>
+    </div>
+  
+    <div class="modal-body p-2">
+        <form [formGroup]="valoresForm">
+            <div class="row mb-2"> 
+                <div class="col-md-8 input-group">
+                    <div class="input-group-prepend input-group-sm size-importe">
+                        <span class="input-group-text">N° Interno:</span>
+                    </div>
+                    <div class="input-group-prepend input-group-sm size-cliente-input mr-1">
+                        <input class="form-control disabled" formControlName="interno">
+                    </div>
+                </div>
+            </div>
+            <div class="row mb-2"> 
+                <div class="col-md-12 input-group border-bottom">
+                    <label>Datos del Cheque:</label>
+                </div>
+            </div>
+            <div class="row mb-2"> 
+                <div class="col-md-12 input-group">
+                    <div class="input-group-prepend input-group-sm size-importe">
+                        <span class="input-group-text">Importe:</span>
+                    </div>
+                    <div class="input-group-prepend input-group-sm size-cliente-input mr-2">
+                        <input class="form-control disabled" formControlName="importe" >
+                    </div>
+                    <div class="input-group-prepend input-group-sm size-importe">
+                        <span class="input-group-text">Cliente:</span>
+                    </div>
+                    <div class="input-group-prepend input-group-sm size-cliente-input">
+                        <input class="form-control disabled" formControlName="codigoCliente">
+                    </div>
+                    <div class="input-group-prepend input-group-sm size-cliente-input2 ">
+                        <input class="form-control disabled" formControlName="cliente">
+                    </div>
+                </div>
+            </div>
+            <div class="row mb-2"> 
+                <div class="col-md-12 input-group border-bottom">
+                    <label>Datos a Modificar:</label>
+                </div>
+            </div>
+            <div class="row mb-2"> 
+                <div class="col-md-12 input-group">
+                    <div class="input-group-prepend input-group-sm size-cheque">
+                        <span class="input-group-text">Fecha Cheque:</span>
+                    </div>
+                    <div class="input-group-prepend input-group-sm size-fecha-input-modal mr-2">
+                        <input 
+                        class="form-control" 
+                        type="date" 
+                        formControlName="fechaCheque">
+                    </div>
+                    <div class="input-group-prepend input-group-sm size-sucursal">
+                        <span class="input-group-text">Sucursal:</span>
+                    </div>
+                    <div class="input-group-prepend input-group-sm size-sucursal-input mr-2">
+                        <input class="form-control" formControlName="sucursal">
+                    </div>
+                    <div class="input-group-prepend input-group-sm size-plaza">
+                        <span class="input-group-text">Plaza:</span>
+                    </div>
+                    <div class="input-group-prepend input-group-sm size-plaza-input mr-2">
+                        <input class="form-control" formControlName="cp">
+                    </div>
+                    <div class="input-group-prepend input-group-sm size-numero-cheque">
+                        <span class="input-group-text">N° Cheque:</span>
+                    </div>
+                    <div class="input-group-prepend input-group-sm size-input-numero-cheque">
+                        <input class="form-control" formControlName="cheque">
+                    </div>
+                    
+                </div>
+            </div>
+            <div class="row mb-2"> 
+                <div class="col-md-12 input-group">
+                    <div class="input-group-prepend input-group-sm size-banco">
+                        <span class="input-group-text">Banco:</span>
+                    </div>
+                    <div class="input-group-prepend input-group-sm size-banco-input mr-2">
+                        <select class="form-control" formControlName="banco">
+                            <option *ngFor="let t of bancos" [ngValue]="t.codigo">{{t.codigo}} - {{t.nombre}}</option>
+                        </select>
+                        
+                    </div>
+                    <div class="input-group-prepend input-group-sm size-importe">
+                        <span class="input-group-text">Fecha Mov:</span>
+                    </div>
+                    <div class="input-group-prepend input-group-sm size-fecha-input-modal mr-2">
+                        <input 
+                        class="form-control" 
+                        type="date"
+                        formControlName="fechaEmitido">
+                    </div>
+                    <!--<div class="input-group-prepend input-group-sm size-cupon">
+                        <span class="input-group-text">N° Cupón:</span>
+                    </div>
+                    <div class="input-group-prepend input-group-sm size-cupon-input">
+                        <input class="form-control" formControlName="numeroCupon">
+                    </div>
+                    -->
+                </div>
+            </div>
+        </form>
+    </div>
+  
+    <div class="modal-footer">
+        <button (click)="save(); modal.close('Save click');" class="btn btn-primary btn-sm size-button mx-2" data-bs-toggle="tooltip" data-bs-placement="top" title="Guardar"> 
+            <i class="fa fa-save"></i>
+        </button>
+        <button (click)="modal.close('Save click')" class="btn btn-danger btn-sm size-button mx-2" data-bs-toggle="tooltip" data-bs-placement="top" title="Salir"> 
+            <i class="fa fa-sign-out-alt"></i>
+        </button>
+    </div>
+  
+</ng-template>

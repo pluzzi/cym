@@ -1,0 +1,201 @@
+<div class="row-fluid justify-content-center ">
+    <div class="col-md-12">
+        <div class="card shadow bg-light">
+            <div class="card-header text-align-center">
+                Tipos de Retenciones
+                <input style="width: 150px; height: 31px;" (keydown)="keyDown($event)" class="form-control float-start" placeholder="Buscar" [(ngModel)]="searchValue">
+
+                <button class="btn btn-secondary btn-sm mr-1 float-start"  (click)="search()" data-bs-toggle="tooltip" data-bs-placement="top" title="Buscar"> 
+                    <i class="fa fa-search"></i>
+                </button>
+
+                <button class="btn btn-danger btn-sm mr-1 float-end " (click)="home()" data-bs-toggle="tooltip" data-bs-placement="top" title="Salir"> 
+                    <i class="fa fa-sign-out-alt"></i>
+                </button>
+                <button class="btn btn-secondary btn-sm mr-1 float-end "  (click)="print()" data-bs-toggle="tooltip" data-bs-placement="top" title="Imprimir"> 
+                    <i class="fa fa-print"></i>
+                </button>
+
+                <button class="btn btn-success btn-sm mr-1 float-end "  (click)="exportar()" data-bs-toggle="tooltip" data-bs-placement="top" title="Imprimir"> 
+                    <i class="fa fa-file-excel"></i>
+                </button>
+
+                <button class="btn btn-danger btn-sm mr-1 float-end " (click)="trash()" data-bs-toggle="tooltip" data-bs-placement="top" title="Borrar"> 
+                    <i class="fa fa-trash"></i>
+                </button>
+                
+                <button class="btn btn-primary btn-sm mr-1 float-end " (click)="new()" data-bs-toggle="tooltip" data-bs-placement="top" title="Agregar"> 
+                    <i class="fa fa-plus"></i>
+                </button>
+
+            </div>
+            <div class="mb-1">
+                <ag-grid-angular
+                    style="width: 100%; height: calc(100vh - 115px);"
+                    class="ag-theme-alpine"
+                    [rowData]="retenciones"
+                    [columnDefs]="columnDefs"
+                    [defaultColDef]="defaultColDef"
+                    (gridReady)="onGridReady($event)"
+                    [rowHeight]="25"
+                    rowSelection='single'
+                    (selectionChanged)="onSelectionChanged($event)"
+                    (cellDoubleClicked)="edit()">
+                </ag-grid-angular>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<ng-template #modal let-modal>
+    <div class="modal-header">
+        <h5 class="modal-title text-align-center">{{getModalTitle()}}</h5>
+        <button type="button" class="btn-close" (click)="modal.dismiss('Cross click')"></button>
+    </div>
+  
+    <div class="modal-body">
+        <form [formGroup]="datosForm">
+            <div class="row mb-2">
+                <div class="col-md-3">
+                    <div class="input-group">
+                        <span class="input-group-text size-label">Código:</span>
+                        <input type="text" class="form-control" formControlName="codigo">                    
+                    </div>
+                </div>
+    
+                <div class="col-md-6">
+                    <div class="input-group">
+                        <span class="input-group-text size-label">Nombre:</span>
+                        <input type="text" class="form-control" formControlName="retencion">
+                    </div>
+                </div>
+
+                <div class="col-md-3">
+                    <div class="input-group">
+                        <div class="mt-1">
+                            <input type="checkbox" formControlName="verCompras"/> Ver Compras
+                        </div>
+                    </div>
+                </div>
+            </div>
+    
+            <div class="row mb-2">
+                <div class="col-md-4">
+                    <div class="input-group">
+                        <div class="mt-1">
+                            <input type="radio" value="1" formControlName="ivaVentaCompra"/> Ventas
+                            <input type="radio" value="2" formControlName="ivaVentaCompra"/> Compras
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-md-4">
+                    <div class="input-group">
+                        <div class="mt-1">
+                            <input type="radio" value="1" formControlName="signoIva"/> Más (+)
+                            <input type="radio" value="2" formControlName="signoIva"/> Menos (-)
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-md-4">
+                    <div class="input-group">
+                        <div class="mt-1">
+                            <input type="radio" value="I" formControlName="iva"/> IVA
+                            <input type="radio" value="R" formControlName="iva"/> Retencion
+                        </div>
+                    </div>
+                </div>
+    
+            </div>
+
+            <div class="row mb-2">
+                <div class="col-md-4">
+                    <div class="input-group">
+                        <span class="input-group-text">Cta Contable:</span>
+                        <input type="text" class="form-control" formControlName="cuenta" (keydown)="cuentaKeyDown($event)">                    
+                    </div>
+                </div>
+    
+                <div class="col-md-8">
+                    <div class="input-group">
+                        <span class="input-group-text">Cta Cont. Nombre:</span>
+                        <input type="text" class="form-control disabled" formControlName="cuentaContableNombre">                    
+                    </div>
+                </div>
+            </div>
+
+            <div class="row mb-2">
+                <div class="col-md-6">
+                    <div class="input-group">
+                        <span class="input-group-text">Jurisdicción:</span>
+                        <input type="text" class="form-control" formControlName="jurisdiccion">                    
+                    </div>
+                </div>
+    
+            </div>
+
+    
+    
+            
+        </form>
+      
+        
+    </div>
+  
+    <div class="modal-footer">
+        <button (click)="save(); modal.close('Save click');" class="btn btn-primary btn-size mx-2" data-bs-toggle="tooltip" data-bs-placement="top" title="Guardar"> 
+            <i class="fa fa-save"></i>
+        </button>
+        <button (click)="modal.close('Save click')" class="btn btn-danger btn-size mx-2" data-bs-toggle="tooltip" data-bs-placement="top" title="Salir"> 
+            <i class="fa fa-sign-out-alt"></i>
+        </button>
+    </div>
+  
+</ng-template>
+
+<div  id="print_retenciones" class="visibility">
+        
+    <div class="row text-align-right">
+        <strong>Fecha Emisión: {{fechaEmision | date: 'dd/MM/yyyy'}}</strong> 
+    </div>
+    <br>
+    
+    <div class="text-align-center ">
+        <strong>Tipos de Retenciones</strong>
+    </div>
+    <br>
+    <div class="">
+        <table class="table border">
+            <thead class="border">
+                <tr>
+                    <th class="border">Código</th>
+                    <th class="border">Nombre</th>
+                    <th class="border">Ver Compras</th>
+                    <th class="border">IVA</th>
+                    <th class="border">Signo</th>
+                    <th class="border">Columna</th>
+                    <th class="border">Cta.Contable</th>
+                    <th class="border">Nombre Cta.Contable</th>
+                    <th class="border">Jurisdicción</th>
+
+                </tr>
+            </thead>
+            <tbody>             
+                <tr *ngFor="let r of dataPrint">
+                    <td class="border font">{{r.codigo}}</td>
+                    <td class="border font">{{r.retencion}}</td>
+                    <td class="border font">{{r.verCompras == 0 ? '' : 'Check'}}</td>
+                    <td class="border font">{{r.ivaVentaCompra == 0 ? '' : (r.ivaVentaCompra == '1' ? 'IVA Ventas' : 'IVA Compras')}}</td>
+                    <td class="border font">{{r.signoIva == 0 ? '' : (r.signoIva == '1' ? '(+)' : '(-)')}}</td>
+                    <td class="border font">{{r.iva == null ? '' : (r.iva == 'I' ? 'IVA' : 'Retención')}}</td>
+                    <td class="border font">{{r.cuenta}}</td>
+                    <td class="border font">{{getNombreCtaContable(r.cuenta)}}</td>
+                    <td class="border font">{{r.jurisdiccion}}</td>
+                    
+                </tr> 
+            </tbody>
+        </table>
+    </div>
+</div>

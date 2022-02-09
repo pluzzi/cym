@@ -1,0 +1,130 @@
+
+<div class="row-fluid justify-content-center">
+    <div class="col-md-12">
+        <div class="card shadow bg-light">
+            <div class="card-title display inline">
+                <div class="card-header text-align-center">
+                    Planilla de Caja
+                    <button class="btn btn-danger btn-sm m-0 float-end "  (click)="home()" data-bs-toggle="tooltip" data-bs-placement="top" title="Salir"> 
+                        <i class="fa fa-sign-out-alt"></i>
+                    </button>
+                </div>
+            </div>   
+            <div class="card-body">
+                               
+                <div class="row">
+                    
+                    <div class="input-group">
+                        <div class="input-group input-group-sm mr-1 size-fecha">
+                            <span class="input-group-text" id="inputGroup-sizing-sm">Desde:</span>
+                            <input  type="date" 
+                                    class="form-control" 
+                                    [ngModel]="desde | date:'yyyy-MM-dd' : 'UTC'"  
+                                    (ngModelChange)="setDesde($event)"  
+                                    aria-label="Sizing example input" 
+                                    aria-describedby="inputGroup-sizing-sm">
+                        </div>
+                        <div class="input-group input-group-sm mr-1 size-fecha">
+                            <span class="input-group-text" id="inputGroup-sizing-sm">Hasta:</span>
+                            <input  type="date" 
+                                    class="form-control" 
+                                    [ngModel]="hasta | date:'yyyy-MM-dd' : 'UTC'"  
+                                    (ngModelChange)="setHasta($event)"  
+                                    aria-label="Sizing example input" 
+                                    aria-describedby="inputGroup-sizing-sm">
+                        </div>
+                        <div class="input-group input-group-sm mr-1 size-turno">
+                            <span class="input-group-text" id="inputGroup-sizing-sm">Turno:</span>
+                            <input type="text" [(ngModel)]="turnoSelected" class="form-control" aria-label="Sizing example input" value="0" aria-describedby="inputGroup-sizing-sm">
+                        </div>
+                        
+                        
+                        
+                        <button class="btn btn-primary btn-sm size-button mr-1" (click)="getInformes()" data-bs-toggle="tooltip" data-bs-placement="top" title="Buscar"> 
+                            <i class="fa fa-search"></i>
+                        </button>
+                        <button class="btn btn-secondary btn-sm size-button mr-1" (click)="print()" data-bs-toggle="tooltip" data-bs-placement="top" title="Imprimir"> 
+                            <i class="fa fa-print"></i>
+                        </button>
+                        <button class="btn btn-success btn-sm size-button mr-1" (click)="exportar()" data-bs-toggle="tooltip" data-bs-placement="top" title="Exportar a Excel"> 
+                            <i class="fa fa-file-excel"></i>
+                        </button>
+                        
+                    </div>
+                </div>
+                <div class="row mt-1">
+                    <div class="form-group mb-1">
+                        <button class="btn btn-secondary btn-sm float-end"  (click)="search()" data-bs-toggle="tooltip" data-bs-placement="top" title="Buscar"> 
+                            <i class="fa fa-search"></i>
+                        </button>
+                        <input style="width: 190px; height: 31px;" (keydown)="keyDown($event)" class="form-control float-end" placeholder="Buscar" [(ngModel)]="searchValue">
+                    </div>
+                </div>
+               
+                                
+                <ag-grid-angular
+                    style="width: 100%; height: calc(100vh - 190px);"
+                    class="ag-theme-alpine "
+                    [rowData]="informeCaja"
+                    [columnDefs]="columnDefs"
+                    [defaultColDef]="defaultColDef"
+                    (gridReady)="onGridReady($event)"
+                    rowSelection='single'
+                    [rowHeight]="20"
+                    [getRowStyle]="getRowStyle">
+                </ag-grid-angular>
+                
+             
+            </div>
+        
+                    
+        </div>
+    </div>
+</div>
+
+<div  id="print_reporte_caja" class="visibility">
+        
+    <div class="row text-align-right">
+        <strong>Fecha Emisión: {{fechaEmision | date: 'dd/MM/yyyy'}}</strong> 
+    </div>
+    <br>
+    
+    <div class="text-align-center ">
+        <strong>Planilla de Caja</strong>
+    </div>
+    
+    <br>
+    <div>
+        <strong>Desde: {{desde | date: 'dd/MM/yyyy'}}</strong> - <strong>Hasta: {{hasta | date: 'dd/MM/yyyy'}}</strong> 
+    </div>
+    <br>
+    <div class="">
+        
+        <table class="table border">
+            <thead class="border">
+                <tr>
+                    <th class="border">Fecha</th>
+                    <th class="border">N°</th>
+                    <th class="border">Turno</th>
+                    <th class="border">Concepto</th>
+                    <th class="border">Monedas / Retenciones</th>
+                    <th class="border">Debe</th>
+                    <th class="border">Haber</th>
+                    <th class="border">N° Asiento</th>
+                </tr>
+            </thead>
+            <tbody>             
+                <tr *ngFor="let r of dataPrint"  class="border">
+                    <td class="text-align-left font border">{{r.fecha }}</td>
+                    <td class="text-align-left font border">{{r.numero}}</td>
+                    <td class="text-align-right font border">{{r.turno}}</td>
+                    <td class="text-align-right font border">{{r.concepto}}</td>
+                    <td class="text-align-right font border" [ngClass]="{'negrita' : r.moneda?.includes('Total')}">{{r.moneda}}</td>
+                    <td class="text-align-right font border" [ngClass]="{'negrita' : r.moneda == undefined || r.moneda.includes('Total')}">{{r.debe | number: '.2-2'}}</td>
+                    <td class="text-align-right font border" [ngClass]="{'negrita' : r.moneda == undefined || r.moneda.includes('Total')}">{{r.haber | number: '.2-2'}}</td>
+                    <td class="text-align-right font border">{{r.asiento}}</td>
+                </tr> 
+            </tbody>
+        </table>
+    </div>
+</div>

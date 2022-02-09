@@ -1,0 +1,49 @@
+.size-label{
+    width: 85px !important;
+  }
+
+.size-imput-codigo{
+    width: 85px !important;
+  }
+
+.size-label-cuenta{
+    width: 125px !important;
+  }  
+
+.size-label-nombre{
+    width: 225px !important;
+  }  
+
+.size-label-jurisdiccion{
+    width: 165px !important;
+  }  
+
+.size-input-jurisdiccion{
+    width: 300px !important;
+  }  
+
+.size-label-iva{
+    width: 60px !important;
+  }  
+
+.size-label-signos{
+    width: 80px !important;
+  } 
+
+.size-label-columna{
+    width: 100px !important;
+  }  
+
+.disabled{
+  pointer-events: none;
+}
+
+  
+
+
+  
+
+  
+
+
+

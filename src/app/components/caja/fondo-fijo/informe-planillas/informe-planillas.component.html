@@ -1,0 +1,131 @@
+
+<div class="row-fluid justify-content-center">
+    <div class="col-md-12">
+        <div class="card shadow bg-light">
+            <div class="card-title display inline">
+                <div class="card-header text-align-center">
+                    Listado General de Planillas
+                    <button class="btn btn-danger btn-sm m-0 float-end "  (click)="home()" data-bs-toggle="tooltip" data-bs-placement="top" title="Salir"> 
+                        <i class="fa fa-sign-out-alt"></i>
+                    </button>
+                </div>
+            </div>   
+            <div class="card-body">
+                               
+                <div class="row">
+                    
+                    <div class="input-group">
+                        <div class="input-group input-group-sm mb-1 mr-1 size-fecha">
+                            <span class="input-group-text" id="inputGroup-sizing-sm">Desde:</span>
+                            <input  type="date" 
+                                    class="form-control" 
+                                    [ngModel]="desde | date:'yyyy-MM-dd' : 'UTC'"  
+                                    (ngModelChange)="setDesde($event)"  
+                                    aria-label="Sizing example input" 
+                                    aria-describedby="inputGroup-sizing-sm">
+                        </div>
+                        <div class="input-group input-group-sm mb-1 mr-1 size-fecha">
+                            <span class="input-group-text" id="inputGroup-sizing-sm">Hasta:</span>
+                            <input  type="date" 
+                                    class="form-control" 
+                                    [ngModel]="hasta | date:'yyyy-MM-dd' : 'UTC'"  
+                                    (ngModelChange)="setHasta($event)"  
+                                    aria-label="Sizing example input" 
+                                    aria-describedby="inputGroup-sizing-sm">
+                        </div>
+                        <div class="input-group input-group-sm mb-1 mr-1 size-moneda">
+                            <span class="input-group-text">Usuarios:</span>
+                            <select class="form-control" [(ngModel)]="usuarioSelected">
+                                <option [ngValue]="0">Todos</option>
+                                <option [ngValue]="u.codigo" *ngFor="let u of usuarios">{{u.nombre}}</option>
+                            </select>
+                        </div>
+                        <div class="input-group input-group-sm mb-1 mr-2 size-estados">
+                            <span class="input-group-text">Estados:</span>
+                            <select class="form-control" [(ngModel)]="estadoSelected">
+                                <option [ngValue]="e.id" *ngFor="let e of estados">{{e.descripcion}}</option>
+                            </select>
+                        </div>
+                        
+                        <button class="btn btn-primary btn-sm size-button mr-1" (click)="getInformes()" data-bs-toggle="tooltip" data-bs-placement="top" title="Buscar"> 
+                            <i class="fa fa-search"></i>
+                        </button>
+                        <button class="btn btn-secondary btn-sm size-button mr-1" (click)="print()" data-bs-toggle="tooltip" data-bs-placement="top" title="Imprimir"> 
+                            <i class="fa fa-print"></i>
+                        </button>
+                        <button class="btn btn-success btn-sm size-button mr-2" (click)="exportar()" data-bs-toggle="tooltip" data-bs-placement="top" title="Exportar a Excel"> 
+                            <i class="fa fa-file-excel"></i>
+                        </button>
+                        
+                    </div>
+                </div>
+                <div class="row mt-1">
+                    <div class="form-group mb-2">
+                        <button class="btn btn-secondary btn-sm float-end"  (click)="search()" data-bs-toggle="tooltip" data-bs-placement="top" title="Buscar"> 
+                            <i class="fa fa-search"></i>
+                        </button>
+                        <input style="width: 190px; height: 31px;" (keydown)="keyDown($event)" class="form-control float-end" placeholder="Buscar" [(ngModel)]="searchValue">
+                    </div>
+                </div>
+               
+                                
+                <ag-grid-angular
+                    style="width: 100%; height: calc(100vh - 200px); "
+                    class="ag-theme-alpine"
+                    [rowData]="informePlanillaFondo"
+                    [columnDefs]="columnDefs"
+                    [defaultColDef]="defaultColDef"
+                    (gridReady)="onGridReady($event)"
+                    rowSelection='single'
+                    [rowHeight]="20"
+                    >
+                </ag-grid-angular>
+                
+             
+            </div>
+        
+                    
+        </div>
+    </div>
+</div>
+
+<div  id="print_informe_planillaFF" class="visibility">
+        
+    <div class="row text-align-right">
+        <strong>Fecha Emisión: {{fechaEmision | date: 'dd/MM/yyyy'}}</strong> 
+    </div>
+    <br>
+    
+    <div class="text-align-center">
+        <strong>Listado General de Planillas</strong>
+    </div>
+    <br>
+    <div class="">
+        <table class="table">
+            <thead class="border">
+                <tr>
+                    <th class="border">Usuario</th>
+                    <th class="border">N° Planilla</th>
+                    <th class="border">Fecha Apertura</th>
+                    <th class="border">Fecha Cierre</th>
+                    <th class="border">Total</th>
+                    <th class="border">Estado</th>
+                    <th class="border">N° Movimiento</th>
+                    <th class="border">Destino</th>
+                </tr>
+            </thead>
+            <tbody>             
+                <tr *ngFor="let r of dataPrint">
+                    <td class="border font">{{r.usuario}}</td>
+                    <td class="border font">{{r.numeroPlanilla}}</td>
+                    <td class="border font">{{r.fechaApertura }}</td>
+                    <td class="border font">{{r.fechaCierre }}</td>
+                    <td class="border font">{{r.importe | number: '.2-2'}}</td>                  
+                    <td class="border font">{{r.estado}}</td>
+                    <td class="border font">{{r.numeroMovimiento}}</td>
+                    <td class="border font">{{r.destino}}</td>
+                </tr> 
+            </tbody>
+        </table>
+    </div>
+</div>

@@ -1,0 +1,28 @@
+.footer{
+    height: 20px !important;
+    position: fixed !important;
+    bottom: 0px !important;
+    width: 100%;
+    color: rgb(228, 217, 217);
+    font-size: 14px !important;
+}
+
+.ubicacion{
+    float: right;
+    margin-right: 10px;
+    color: white;
+}
+
+.ubicacion2{
+    float: left;
+    margin-left: 10px;
+    color: white;
+    margin-left: 25px;
+}
+
+.ubicacion3{
+    float: left;
+    margin-left: 10px;
+    color: white;
+    margin-left: 25px;
+}

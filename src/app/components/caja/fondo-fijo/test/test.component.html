@@ -1,0 +1,232 @@
+<button class="btn btn-success"  (click)="edit()" data-bs-toggle="tooltip" data-bs-placement="top" title="Ver detalle del Movimiento"> 
+    <i class="fa fa-book"></i>
+</button>
+
+
+<ng-template #modal let-modal>
+    <div class="modal-header">
+        <h5 class="modal-title text-align-center">Detalle del Movimiento</h5>
+        <button type="button" class="btn-close" (click)="modal.dismiss('Cross click')"></button>
+    </div>
+  
+    <div class="modal-body p-2">
+        <form [formGroup]="movimientosForm">
+            <div class="input-group">
+                <div class="col-md-6 border mx-2 my-2 p-2">
+
+                    <div class="row mb-2"> 
+                        <div class="col-md-12 input-group">
+                            
+                            <!--<div class="border-bottom margenFactura">
+                                <input class="form-radio-input mr-1" type="radio" value="1" [(ngModel)]="condicion" name="deposito-acreditacion">
+                                <label class="form-check-label mr-3 mt-1" style="font-size: 13px;" for="inlineCheckbox1">Sin IVA</label>
+                            
+                            
+                                <input class="form-radio-input mr-1" type="radio" value="2" [(ngModel)]="condicion" name="deposito-acreditacion">
+                                <label class="form-check-label mt-1 mr-2" style="font-size: 13px;" for="inlineCheckbox2">Con IVA</label>
+                            </div>-->
+        
+                            
+                            <div class="input-group-prepend input-group-sm size-numeroFacturaLetra margenFactura">
+                                <input maxlength="1" class="form-control " formControlName="interno">
+                            </div>
+                            <div class="input-group-prepend input-group-sm size-numeroFacturaNumero1">
+                                <input maxlength="4" class="form-control  " formControlName="interno">
+                            </div>
+                            <div class="input-group-prepend input-group-sm size-numeroFacturaNumero2">
+                                <input maxlength="8" class="form-control  " formControlName="interno">
+                            </div>
+                        </div>
+                      
+                        
+                    </div>
+                    
+                    <div class="row mb-2"> 
+                        <div class="col-md-12 input-group">
+                            <div class="input-group-prepend input-group-sm">
+                                <span class="input-group-text">Proveedor:</span>
+                            </div>
+                            <div class="input-group-prepend input-group-sm mr-2">
+                                <input class="form-control" formControlName="proveedor" >
+                            </div>
+                            <div class="input-group-prepend input-group-sm">
+                                <span class="input-group-text">CUIT:</span>
+                            </div>
+                            <div class="input-group-prepend input-group-sm">
+                                <input class="form-control" formControlName="cuit">
+                            </div>
+                            
+                        </div>
+                    </div>
+    
+                    <div class="row mb-2"> 
+                        <div class="input-group">
+                            
+                            <div class="input-group-prepend input-group-sm ">
+                                <span class="input-group-text">Nombre:</span>
+                            </div>
+                            <div class="input-group-prepend input-group-sm size-nombre-input">
+                                <input class="form-control" formControlName="nombre">
+                            </div>
+                        </div>
+                    </div>
+    
+                    <div class="row mb-2"> 
+                        <div class="col-md-12 input-group">
+                            <div class="input-group-prepend input-group-sm">
+                                <span class="input-group-text">IVA:</span>
+                            </div>
+                            <div class="input-group-prepend input-group-sm size-iva mr-2">
+                                <input class="form-control" formControlName="iva">
+                            </div>
+                            <div class="input-group-prepend input-group-sm">
+                                <span class="input-group-text">Fecha:</span>
+                            </div>
+                            <div class="input-group-prepend input-group-sm size-fecha-input">
+                                <input 
+                                class="form-control" 
+                                type="date"
+                                formControlName="fecha">
+                            </div>
+                            
+                        </div>
+                    </div>
+    
+                </div>
+                <div class="col-md-5 border mx-2 my-2 p-2">
+                    <div class="row mb-2"> 
+                        <div class="input-group">
+                            <div class="input-group-prepend input-group-sm sizeSpan">
+                                <span class="input-group-text">Neto 21%:</span>
+                            </div>
+                            <div class="input-group-prepend input-group-sm sizeInput mr-1">
+                                <input class="form-control" formControlName="iva21" >
+                            </div>
+                            <div class="input-group-prepend input-group-sm sizeSpan">
+                                <span class="input-group-text">IVA 21%:</span>
+                            </div>
+                            <div class="input-group-prepend input-group-sm sizeInput">
+                                <input class="form-control" formControlName="codigoCliente">
+                            </div>
+                            
+                        </div>
+                    </div>
+                    <div class="row mb-2"> 
+                        <div class="input-group">
+                            <div class="input-group-prepend input-group-sm sizeSpan">
+                                <span class="input-group-text">Neto 27%:</span>
+                            </div>
+                            <div class="input-group-prepend input-group-sm sizeInput mr-1">
+                                <input class="form-control" formControlName="importe" >
+                            </div>
+                            <div class="input-group-prepend input-group-sm sizeSpan">
+                                <span class="input-group-text">IVA 27%:</span>
+                            </div>
+                            <div class="input-group-prepend input-group-sm sizeInput">
+                                <input class="form-control" formControlName="codigoCliente">
+                            </div>
+                            
+                        </div>
+                    </div>
+                    <div class="row mb-2"> 
+                        <div class="input-group">
+                            <div class="input-group-prepend input-group-sm sizeSpan">
+                                <span class="input-group-text">Neto 10.5%:</span>
+                            </div>
+                            <div class="input-group-prepend input-group-sm mr-1 sizeInput">
+                                <input class="form-control" formControlName="importe" >
+                            </div>
+                            <div class="input-group-prepend input-group-sm sizeSpan">
+                                <span class="input-group-text">IVA 10.5%:</span>
+                            </div>
+                            <div class="input-group-prepend input-group-sm sizeInput">
+                                <input class="form-control" formControlName="codigoCliente">
+                            </div>
+                            
+                        </div>
+                    </div>
+                    <div class="row mb-2"> 
+                        <div class="input-group">
+                            <div class="input-group-prepend input-group-sm sizeSpan">
+                                <span class="input-group-text">No Grav:</span>
+                            </div>
+                            <div class="input-group-prepend input-group-sm mr-1 sizeInput">
+                                <input class="form-control" formControlName="importe" >
+                            </div>
+                            <div class="input-group-prepend input-group-sm sizeSpan">
+                                <span class="input-group-text">Percepción:</span>
+                            </div>
+                            <div class="input-group-prepend input-group-sm sizeInput">
+                                <input class="form-control" formControlName="codigoCliente">
+                            </div>
+                            
+                        </div>
+                    </div>
+                    <div class="row mb-2"> 
+
+                        <div class="input-group margenTotal">
+                                                        
+                            <div class="input-group-prepend input-group-sm  sizeSpan">
+                                <span class="input-group-text">Total Comp.:</span>
+                            </div>
+                            <div class="input-group-prepend input-group-sm sizeInput">
+                                <input class="form-control" formControlName="codigoCliente">
+                            </div>
+                            
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="row mt-1 mb-2 mx-1 my-1 ">
+                <div class="input-group">
+                            
+                    <div class="input-group-prepend input-group-sm ">
+                        <span class="input-group-text">Archivo PDF:</span>
+                    </div>
+                    <div class="input-group-prepend input-group-sm size-archivoPdf-input">
+                        <input class="form-control" formControlName="sucursal">
+                    </div>
+                    <button class="btn btn-secondary btn-sm size-button mr-2" data-bs-toggle="tooltip" data-bs-placement="top" title="Examinar"> 
+                        <i class="fa fa-search-plus"></i>
+                    </button>
+                    <button class="btn btn-danger btn-sm size-button" data-bs-toggle="tooltip" data-bs-placement="top" title="Abrir PDF"> 
+                        <i class="fa fa-file-pdf"></i>
+                    </button>
+                </div>
+            </div>
+            
+            <div class="row mx-2 my-3">
+                <div class="col-md-12 marginGrillaDetalle">
+                    <ag-grid-angular
+                        style="width: 50%; height: calc(100px); "
+                        class="ag-theme-alpine"
+                        [rowData]="grillaDetalleMovimientos"
+                        [columnDefs]="columnDefs3"
+                        [defaultColDef]="defaultColDef"
+                        (gridReady)="onGridReadySaldos($event)"
+                        rowSelection='single'
+                        [rowHeight]="20"
+                        [getRowStyle]="getRowStyle"
+                        >   
+                     </ag-grid-angular>
+                </div>
+                
+                    
+                
+                                
+                
+            </div>
+        </form>
+    </div>
+  
+    <div class="modal-footer">
+        <button (click)="saveModal(); modal.close('Save click');" class="btn btn-primary btn-sm size-button mx-2" data-bs-toggle="tooltip" data-bs-placement="top" title="Guardar"> 
+            <i class="fa fa-save"></i>
+        </button>
+        <button (click)="modal.close('Save click')" class="btn btn-danger btn-sm size-button mx-2" data-bs-toggle="tooltip" data-bs-placement="top" title="Cancelar"> 
+            <i class="fa fa-window-close"></i>
+        </button>
+    </div>
+  
+</ng-template>

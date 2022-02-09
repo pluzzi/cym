@@ -1,0 +1,473 @@
+
+<div class="row-fluid justify-content-center">
+    <div class="col-md-12">
+        <div class="card shadow bg-light">
+            <div class="card-title display inline">
+                <div class="card-header text-align-center">
+                    Planilla de Fondo Fijo
+                    <button class="btn btn-danger btn-sm m-0 float-end "  (click)="home()" data-bs-toggle="tooltip" data-bs-placement="top" title="Salir"> 
+                        <i class="fa fa-sign-out-alt"></i>
+                    </button>
+                </div>
+            </div>   
+            <div class="card-body">
+                               
+                <div class="row">
+                    
+                    <div class="input-group">
+                        <div class="input-group input-group-sm  mr-1 size-usuarios">
+                            <span class="input-group-text">Usuario:</span>
+                            <select class="form-control"  [(ngModel)]="usuarioSelected" (change)="getDatos()">
+                                <option [ngValue]="u.codigo" *ngFor="let u of usuarios">{{u.nombre}}</option>
+                            </select>
+                        </div>
+                           
+                        <div class="input-group input-group-sm  mr-1 size-fecha">
+                            <span class="input-group-text" id="inputGroup-sizing-sm">Fecha Apertura:</span>
+                            <input  type="date" 
+                                    class="form-control" 
+                                    [ngModel]="fechaApertura | date:'yyyy-MM-dd' : 'UTC'"  
+                                    (ngModelChange)="setDesde($event)">
+                        </div>
+                        <div class="input-group input-group-sm  mr-1 size-fechaCierre">
+                            <span class="input-group-text" id="inputGroup-sizing-sm">Fecha Cierre:</span>
+                            <input  type="date" 
+                                    class="form-control" 
+                                    [ngModel]="fechaCierre | date:'yyyy-MM-dd' : 'UTC'"  
+                                    (ngModelChange)="setHasta($event)">
+                        </div>
+                        <div class="input-group input-group-sm mr-1 size-planilla">
+                            <span class="input-group-text " id="inputGroup-sizing-sm">Planilla:</span>
+                            <input [(ngModel)]="numeroPlanilla" type="text" class="form-control " (keydown)="keyDown($event)">
+                        </div>
+                        <div class="input-group input-group-sm mr-1 size-movimiento">
+                            <span class="input-group-text " id="inputGroup-sizing-sm">N° Mov:</span>
+                            <input [(ngModel)]="movimiento" type="text"  class="form-control disabled">
+                        </div>                        
+                        
+                        
+                                                                      
+                        <button class="btn btn-primary btn-sm size-button mr-1" data-bs-toggle="tooltip" data-bs-placement="top" title="Cierre"> 
+                            <i class="fa fa-window-close"></i>
+                        </button>                        
+                        <button class="btn btn-outline-warning btn-sm size-button mr-1" (click)="reApertura()" data-bs-toggle="tooltip" data-bs-placement="top" title="Re-Apertura de Planilla"> 
+                            <i class="fa fa-folder-open"></i>
+                        </button>
+                        <button class="btn btn-danger btn-sm size-button mr-1" (click)="trash()" data-bs-toggle="tooltip" data-bs-placement="top" title="Borrar Planilla"> 
+                            <i class="fa fa-trash-alt"></i>
+                        </button>
+                        <button (click)="limpiar()" class="btn btn-outline-success btn-sm size-button mr-1" data-bs-toggle="tooltip" data-bs-placement="top" title="Limpiar"> 
+                            <i class="fa fa-eraser"></i>
+                        </button>
+                        <button class="btn btn-secondary btn-sm size-button mr-1" (click)="print()" data-bs-toggle="tooltip" data-bs-placement="top" title="Imprimir"> 
+                            <i class="fa fa-print"></i>
+                        </button>
+                        
+                        
+                                              
+                    </div>
+                </div>
+                <div class="row mt-1 mb-2">
+                    <div class="input-group input-group-sm size-destino mr-1">
+                        <span class="input-group-text" id="inputGroup-sizing-sm">Destino:</span>
+                        <input type="text"  class="form-control" [(ngModel)]="destino">
+                        <button class="btn btn-outline-danger btn-sm size-button" (click)="grabarDestino()" data-bs-toggle="tooltip" data-bs-placement="top" title="Grabar Destino"> 
+                            <i class="fa fa-compact-disc"></i>
+                        </button>
+                    </div>    
+                    <div class="input-group input-group-sm size-pdf">
+                        <span class="input-group-text" id="inputGroup-sizing-sm">PDF Gastos V:</span>
+                        <input type="text"  class="form-control" [(ngModel)]="archivoPfd">
+                        <button class="btn btn-primary btn-sm size-button mr-1" data-bs-toggle="tooltip" data-bs-placement="top" title="Examinar"> 
+                            <i class="fa fa-search-plus"></i>
+                        </button>
+                        <button class="btn btn-danger btn-sm size-button mr-1" data-bs-toggle="tooltip" data-bs-placement="top" title="Abrir PDF"> 
+                            <i class="fa fa-file-pdf"></i>
+                        </button>
+                        <button class="btn btn-outline-danger btn-sm size-button" data-bs-toggle="tooltip" data-bs-placement="top" title="Grabar PDF"> 
+                            <i class="fa fa-compact-disc"></i>
+                        </button>
+                    </div>                   
+                </div>
+                
+                <ag-grid-angular
+                    style="width: 100%; height: calc(100vh - 400px); "
+                    class="ag-theme-alpine"
+                    [rowData]="grillaMovimientos"
+                    [columnDefs]="columnDefs1"
+                    [defaultColDef]="defaultColDef"
+                    (gridReady)="onGridReadyMovimientos($event)"
+                    rowSelection='single'
+                    [rowHeight]="20"
+                    [getRowStyle]="getRowStyle"
+                    (selectionChanged)="onSelectionChanged($event)"
+                    >
+                </ag-grid-angular>
+                <div class="row">
+                    <div class="offset-md-10 col-md-2 mt-1 mb-1">
+                        <div class="input-group">
+                            <div class="input-group input-group-sm">
+                                <span class="input-group-text">Total:</span>
+                                <input [(ngModel)]="total" class="form-control disabled text-align-right">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                           
+                <div class="">
+                    <button class="btn btn-success  m-0 float-end mt-1 "  (click)="edit()" data-bs-toggle="tooltip" data-bs-placement="top" title="Ver detalle del Movimiento"> 
+                        <i class="fa fa-book"></i>
+                    </button>
+                </div>
+                
+                <div class="row mt-1 mb-1">
+                    <div class="col-md-9">
+                        <ag-grid-angular
+                            style="width: 95%; height: 140px;"
+                            class="ag-theme-alpine"
+                            [rowData]="grillaDetalleSaldos"
+                            [columnDefs]="columnDefs2"
+                            [defaultColDef]="defaultColDef"
+                            (gridReady)="onGridReadySaldos($event)"
+                            rowSelection='single'
+                            [rowHeight]="20"
+                            [getRowStyle]="getRowStyle"
+                            >   
+                         </ag-grid-angular>
+                    </div>
+                </div>
+                
+                
+             
+            </div>
+        
+                    
+        </div>
+    </div>
+</div>
+
+<div  id="print_informe_fondo_fijo" class="visibility">
+        
+    <div class="row text-align-right">
+        <strong>Fecha Emisión: {{fechaEmision | date: 'dd/MM/yyyy'}}</strong> 
+    </div>
+    <br>
+    <div class="text-align-left">
+        <strong>CYM Materiales S.A.</strong>
+    </div>    
+    
+    <div class="text-align-center ">
+        <strong>Planilla de Fondo Fijo</strong>
+    </div>
+    <br>
+    <br>
+    
+    <div>
+        <strong>Usuario: {{getUsuariosNombre()}}</strong> - <strong>N° de Planilla: {{numeroPlanilla}}</strong>
+    </div>
+    <div>
+        <strong>Fecha Apertura: {{fechaApertura | date: 'dd/MM/yyyy'}}</strong> - <strong>Fecha Cierre: {{fechaCierre | date: 'dd/MM/yyyy'}}</strong> - <strong>N° Mov. Caja: {{movimiento}}</strong> - <strong>asiento: {{asiento}}</strong>
+    </div>
+    <div>
+        <strong>Destino: {{destino}}</strong>
+    </div>
+    
+    <br>
+    <div class="">
+        <table class="table border">
+            <thead class="border">
+                <tr>
+                    <th class="border">Código</th>
+                    <th class="border">Concepto</th>
+                    <th class="border">Cuenta</th>
+                    <th class="border">Moneda</th>
+                    <th class="border">Imp.Moneda</th>
+                    <th class="border">Cotización</th>
+                    <th class="border">Importe</th>
+                    <th class="border">F.Tajeta</th>
+
+                </tr>
+            </thead>
+            <tbody>             
+                <tr *ngFor="let r of dataPrint">
+                    <td class="border font text-align-center">{{r.codigoConcepto}}</td>
+                    <td class="border font">{{r.descripcionConcepto}}</td>
+                    <td class="border font">{{r.idCuenta}}</td>
+                    <td class="border font">{{r.moneda}}</td>
+                    <td class="border font text-align-right">{{r.importeCotizacion | number: '.2-2'}}</td>
+                    <td class="border font text-align-center">{{r.cotizacion | number: '1.3-5'}}</td>
+                    <td class="border font text-align-right">{{r.importe | number: '.2-2'}}</td>
+                    <td class="border font text-align-center">{{r.fechaTarjeta | date: 'dd/MM/yyyy'}}</td>
+                </tr> 
+            </tbody>
+        </table>
+        <br>
+        <div class="row text-align-right ">
+            <strong>Total: {{total | number: '.2-2'}}</strong> 
+        </div>
+    </div>
+    <br>
+    <div class="">
+        <table class="table border">
+            <thead class="border">
+                <tr>
+                    <th class="border">Código</th>                    
+                    <th class="border">Moneda</th>
+                    <th class="border">Importe</th>
+                    <th class="border">Importe Gastos</th>
+                    <th class="border">Saldos</th>
+
+                </tr>
+            </thead>
+            <tbody>             
+                <tr *ngFor="let r of dataPrintSaldos">
+                    <td class="border font text-align-center">{{r.codigoMoneda}}</td>
+                    <td class="border font">{{r.nombreMoneda}}</td>
+                    <td class="border font text-align-right">{{r.importeFondo | number: '.2-2'}}</td>
+                    <td class="border font text-align-right">{{r.comprobante}}</td>
+                    <td class="border font text-align-right">{{r.nombre | number: '.2-2'}}</td>
+                </tr> 
+            </tbody>
+        </table>
+                
+    </div>
+
+    <footer class="footerClass">
+        <div class="row font">   
+            Controló-Cerró Planilla:_______________________
+        </div>
+
+        <br>
+        
+        <div class="row wrapper2">   
+            <div class="font">Recibió-Recaudación:_________________________</div>
+            <div class="col-md-2 font text-align-right">Fecha:___/___/___</div>
+        </div>   
+    </footer>
+
+</div>
+
+
+<ng-template #modal let-modal>
+    <div class="modal-header">
+        <h5 class="modal-title text-align-center">Detalle del Movimiento</h5>
+        <button type="button" class="btn-close" (click)="modal.dismiss('Cross click')"></button>
+    </div>
+  
+    <div class="modal-body p-2">
+        <form [formGroup]="movimientosForm">
+            <div class="input-group">
+                <div class="col-md-6 border mx-2 my-2 p-2">
+
+                    <div class="row mb-2"> 
+                        <div class="col-md-12 input-group">
+                            
+                            <!--<div class="border-bottom margenFactura">
+                                <input class="form-radio-input mr-1" type="radio" value="1" [(ngModel)]="condicion" name="deposito-acreditacion">
+                                <label class="form-check-label mr-3 mt-1" style="font-size: 13px;" for="inlineCheckbox1">Sin IVA</label>
+                            
+                            
+                                <input class="form-radio-input mr-1" type="radio" value="2" [(ngModel)]="condicion" name="deposito-acreditacion">
+                                <label class="form-check-label mt-1 mr-2" style="font-size: 13px;" for="inlineCheckbox2">Con IVA</label>
+                            </div>-->
+        
+                            
+                            <div class="input-group-prepend input-group-sm size-numeroFacturaLetra margenFactura">
+                                <input maxlength="1" class="form-control " formControlName="factura">
+                            </div>
+                            <div class="input-group-prepend input-group-sm size-numeroFacturaNumero1">
+                                <input maxlength="4" class="form-control  " formControlName="factura">
+                            </div>
+                            <div class="input-group-prepend input-group-sm size-numeroFacturaNumero2">
+                                <input maxlength="8" class="form-control  " formControlName="factura">
+                            </div>
+                        </div>
+                      
+                        
+                    </div>
+                    
+                    <div class="row mb-2"> 
+                        <div class="col-md-12 input-group">
+                            <div class="input-group-prepend input-group-sm">
+                                <span class="input-group-text">Proveedor:</span>
+                            </div>
+                            <div class="input-group-prepend input-group-sm mr-2">
+                                <input class="form-control" formControlName="proveedor" >
+                            </div>
+                            <div class="input-group-prepend input-group-sm">
+                                <span class="input-group-text">CUIT:</span>
+                            </div>
+                            <div class="input-group-prepend input-group-sm">
+                                <input class="form-control" formControlName="cuit">
+                            </div>
+                            
+                        </div>
+                    </div>
+    
+                    <div class="row mb-2"> 
+                        <div class="input-group">
+                            
+                            <div class="input-group-prepend input-group-sm ">
+                                <span class="input-group-text">Nombre:</span>
+                            </div>
+                            <div class="input-group-prepend input-group-sm size-nombre-input">
+                                <input class="form-control" formControlName="nombre">
+                            </div>
+                        </div>
+                    </div>
+    
+                    <div class="row mb-2"> 
+                        <div class="col-md-12 input-group">
+                            <div class="input-group-prepend input-group-sm">
+                                <span class="input-group-text">IVA:</span>
+                            </div>
+                            <div class="input-group-prepend input-group-sm size-iva mr-2">
+                                <input class="form-control" formControlName="iva">
+                            </div>
+                            <div class="input-group-prepend input-group-sm">
+                                <span class="input-group-text">Fecha:</span>
+                            </div>
+                            <div class="input-group-prepend input-group-sm size-fecha-input">
+                                <input 
+                                class="form-control" 
+                                type="date"
+                                formControlName="fecha">
+                            </div>
+                            
+                        </div>
+                    </div>
+    
+                </div>
+                <div class="col-md-5 border mx-2 my-2 p-2">
+                    <div class="row mb-2"> 
+                        <div class="input-group">
+                            <div class="input-group-prepend input-group-sm sizeSpan">
+                                <span class="input-group-text">Neto 21%:</span>
+                            </div>
+                            <div class="input-group-prepend input-group-sm sizeInput mr-1">
+                                <input class="form-control" formControlName="neto21" >
+                            </div>
+                            <div class="input-group-prepend input-group-sm sizeSpan">
+                                <span class="input-group-text">IVA 21%:</span>
+                            </div>
+                            <div class="input-group-prepend input-group-sm sizeInput">
+                                <input class="form-control" formControlName="iva21">
+                            </div>
+                            
+                        </div>
+                    </div>
+                    <div class="row mb-2"> 
+                        <div class="input-group">
+                            <div class="input-group-prepend input-group-sm sizeSpan">
+                                <span class="input-group-text">Neto 27%:</span>
+                            </div>
+                            <div class="input-group-prepend input-group-sm sizeInput mr-1">
+                                <input class="form-control" formControlName="neto27" >
+                            </div>
+                            <div class="input-group-prepend input-group-sm sizeSpan">
+                                <span class="input-group-text">IVA 27%:</span>
+                            </div>
+                            <div class="input-group-prepend input-group-sm sizeInput">
+                                <input class="form-control" formControlName="iva27">
+                            </div>
+                            
+                        </div>
+                    </div>
+                    <div class="row mb-2"> 
+                        <div class="input-group">
+                            <div class="input-group-prepend input-group-sm sizeSpan">
+                                <span class="input-group-text">Neto 10.5%:</span>
+                            </div>
+                            <div class="input-group-prepend input-group-sm mr-1 sizeInput">
+                                <input class="form-control" formControlName="neto10" >
+                            </div>
+                            <div class="input-group-prepend input-group-sm sizeSpan">
+                                <span class="input-group-text">IVA 10.5%:</span>
+                            </div>
+                            <div class="input-group-prepend input-group-sm sizeInput">
+                                <input class="form-control" formControlName="iva10">
+                            </div>
+                            
+                        </div>
+                    </div>
+                    <div class="row mb-2"> 
+                        <div class="input-group">
+                            <div class="input-group-prepend input-group-sm sizeSpan">
+                                <span class="input-group-text">No Grav:</span>
+                            </div>
+                            <div class="input-group-prepend input-group-sm mr-1 sizeInput">
+                                <input class="form-control" formControlName="noGrav" >
+                            </div>
+                            <div class="input-group-prepend input-group-sm sizeSpan">
+                                <span class="input-group-text">Percepción:</span>
+                            </div>
+                            <div class="input-group-prepend input-group-sm sizeInput">
+                                <input class="form-control" formControlName="percepcion">
+                            </div>
+                            
+                        </div>
+                    </div>
+                    <div class="row mb-2"> 
+
+                        <div class="input-group margenTotal">
+                                                        
+                            <div class="input-group-prepend input-group-sm  sizeSpan">
+                                <span class="input-group-text">Total Comp.:</span>
+                            </div>
+                            <div class="input-group-prepend input-group-sm sizeInput">
+                                <input class="form-control" formControlName="total">
+                            </div>
+                            
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="row mt-1 mb-2 mx-1 my-1 ">
+                <div class="input-group">
+                            
+                    <div class="input-group-prepend input-group-sm ">
+                        <span class="input-group-text">Archivo PDF:</span>
+                    </div>
+                    <div class="input-group-prepend input-group-sm size-archivoPdf-input">
+                        <input class="form-control" formControlName="archivoPdf">
+                    </div>
+                    <button class="btn btn-secondary btn-sm size-button mr-2" data-bs-toggle="tooltip" data-bs-placement="top" title="Examinar"> 
+                        <i class="fa fa-search-plus"></i>
+                    </button>
+                    <button class="btn btn-danger btn-sm size-button" data-bs-toggle="tooltip" data-bs-placement="top" title="Abrir PDF"> 
+                        <i class="fa fa-file-pdf"></i>
+                    </button>
+                </div>
+            </div>
+        </form>    
+        <div class="row mx-2 my-3">
+            <div class="col-md-12 marginGrillaDetalle">
+                <ag-grid-angular
+                    style="width: 50%; height: calc(100px); "
+                    class="ag-theme-alpine"
+                    [rowData]="grillaDetalleMovimientos"
+                    [columnDefs]="columnDefs3"
+                    [defaultColDef]="defaultColDef"
+                    (gridReady)="onGridReadySaldos($event)"
+                    rowSelection='single'
+                    [rowHeight]="20"
+                    [getRowStyle]="getRowStyle"
+                    >   
+                    </ag-grid-angular>
+            </div>
+        </div>
+        
+    </div>
+  
+    <div class="modal-footer">
+        <button (click)="saveModal(); modal.close('Save click');" class="btn btn-primary btn-sm size-button mx-2" data-bs-toggle="tooltip" data-bs-placement="top" title="Guardar"> 
+            <i class="fa fa-save"></i>
+        </button>
+        <button (click)="modal.close('Save click')" class="btn btn-danger btn-sm size-button mx-2" data-bs-toggle="tooltip" data-bs-placement="top" title="Cancelar"> 
+            <i class="fa fa-window-close"></i>
+        </button>
+    </div>
+  
+</ng-template>

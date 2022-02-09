@@ -1,0 +1,301 @@
+
+<div class="row-fluid justify-content-center">
+    <div class="col-md-12">
+        <div class="card shadow bg-light">
+            <div class="card-title display inline">
+                <div class="card-header text-align-center">
+                    Cheques Emitidos  /  Extracciones Bancarias
+                    <button class="btn btn-danger btn-sm m-0 float-end "  (click)="home()" data-bs-toggle="tooltip" data-bs-placement="top" title="Salir"> 
+                        <i class="fa fa-sign-out-alt"></i>
+                    </button>
+                </div>
+            </div>   
+            <div class="card-body">
+                               
+                <div class="row">
+                    
+                    <div class="input-group">
+                        <div class="input-group input-group-sm mb-2 mr-1 size-fecha">
+                            <span class="input-group-text" id="inputGroup-sizing-sm">Desde:</span>
+                            <input  type="date" 
+                                    class="form-control" 
+                                    [ngModel]="desde | date:'yyyy-MM-dd' : 'UTC'"  
+                                    (ngModelChange)="setDesde($event)"  
+                                    aria-label="Sizing example input" 
+                                    aria-describedby="inputGroup-sizing-sm">
+                        </div>
+                        <div class="input-group input-group-sm mb-2 mr-1 size-fecha">
+                            <span class="input-group-text" id="inputGroup-sizing-sm">Hasta:</span>
+                            <input  type="date" 
+                                    class="form-control" 
+                                    [ngModel]="hasta | date:'yyyy-MM-dd' : 'UTC'"  
+                                    (ngModelChange)="setHasta($event)"  
+                                    aria-label="Sizing example input" 
+                                    aria-describedby="inputGroup-sizing-sm">
+                        </div>
+                        <div class="input-group input-group-sm mb-2 mr-2 size-moneda">
+                            <span class="input-group-text" id="inputGroup-sizing-sm">Moneda:</span>
+                            <select class="form-control" [(ngModel)]="monedaSelected">
+                                <option *ngFor="let t of tipos_moneda_banco_propio" [ngValue]="t.codigo">{{t.codigo}} - {{t.nombre}}</option>
+                            </select>
+                        </div>
+                        <div class="form-check form-check-inline">
+                            <input class="form-radio-input mr-1" type="radio" value="1" [(ngModel)]="tipo" name="deposito-acreditacion">
+                            <label class="form-check-label" style="font-size: 13px;" for="inlineCheckbox1">Fecha Movimiento</label>
+                        </div>
+                        <div class="form-check form-check-inline">
+                            <input class="form-radio-input mr-1" type="radio" value="2" [(ngModel)]="tipo" name="deposito-acreditacion">
+                            <label class="form-check-label" style="font-size: 13px;" for="inlineCheckbox2">Fecha Cheque</label>
+                        </div>
+                                              
+                        
+                        
+                        
+                        
+                                              
+                    </div>
+                </div>
+                <div class="row mt-1">
+                    <div class="input-group">
+                        <div class="input-group input-group-sm mb-2 size-estado">
+                            <span class="input-group-text" id="inputGroup-sizing-sm">Estado Cheques:</span>
+                            <select class="form-control" [(ngModel)]="estadoChequeSelected">
+                                <option [ngValue]="v.id" *ngFor="let v of estadoCheque">{{v.descripcion}}</option>
+                            </select>
+                        </div>
+                        
+                        <div class="form-check form-check-inline ">
+                            <input class="mr-2" type="checkbox" [(ngModel)]="detalladoSelected">
+                            <label class="form-check-label" style="font-size: 12px;" >
+                                Detallado OP y Facturas
+                            </label>
+                        </div>
+                        <button class="btn btn-primary btn-sm size-button mr-1" (click)="getInformes()" data-bs-toggle="tooltip" data-bs-placement="top" title="Buscar"> 
+                            <i class="fa fa-search"></i>
+                        </button>
+                        <button class="btn btn-secondary btn-sm size-button mr-1" (click)="print()" data-bs-toggle="tooltip" data-bs-placement="top" title="Imprimir"> 
+                            <i class="fa fa-print"></i>
+                        </button>
+                        <button class="btn btn-success btn-sm size-button mr-1" (click)="exportar()" data-bs-toggle="tooltip" data-bs-placement="top" title="Exportar a Excel"> 
+                            <i class="fa fa-file-excel"></i>
+                        </button>
+                    </div>
+                </div>
+
+                <div class="row mt-1">
+                    
+                    <div class="form-group mb-2">
+                        <button class="btn btn-secondary btn-sm float-end"  (click)="search()" data-bs-toggle="tooltip" data-bs-placement="top" title="Buscar"> 
+                            <i class="fa fa-search"></i>
+                        </button>
+                        <input style="width: 190px; height: 31px;" (keydown)="keyDown($event)" class="form-control float-end" placeholder="Buscar" [(ngModel)]="searchValue">
+                    </div>
+                </div>
+                <ag-grid-angular
+                    style="width: 100%; height: calc(100vh - 245px); "
+                    class="ag-theme-alpine "
+                    [rowData]="informeChequesExtracciones"
+                    [columnDefs]="columnDefs"
+                    [defaultColDef]="defaultColDef"
+                    (gridReady)="onGridReady($event)"
+                    rowSelection='single'
+                    [rowHeight]="20"
+                    [getRowStyle]="getRowStyle">
+                </ag-grid-angular>
+                
+            
+            </div>
+        
+                    
+        </div>
+    </div>
+</div>
+
+<div  id="print_reporte_cheques_emitidos" class="visibility">
+        
+    <div class="row text-align-right">
+        <strong>Fecha Emisión: {{fechaEmision | date: 'dd/MM/yyyy'}}</strong> 
+    </div>
+    <br>
+    
+    <div class="text-align-center ">
+        <strong>Informe de Cheques Emitidos / Extracciones Bancarias</strong>
+    </div>
+    <br>
+    <div>
+        <strong>Desde: {{desde | date: 'dd/MM/yyyy'}}</strong> - <strong>Hasta: {{hasta | date: 'dd/MM/yyyy'}}</strong> 
+    </div>
+    <br>
+    <div>
+        <strong>Moneda: {{ getMonedaNombre()}}</strong> - <strong>Estado Cheques: {{ getEstadoNombre() }}</strong> 
+    </div>
+    <br>
+    <div class="">
+        <table class="table border">
+            <thead class="border">
+                <tr>
+                    <th class="border">F.Mov.</th>
+                    <th class="border">F.Cheque</th>
+                    <th class="border">Extracción</th>
+                    <th class="border">Chequera</th>
+                    <th class="border">Número</th>
+                    <th class="border">Estado</th>
+                    <th class="border">Importe</th>                    
+                    <th class="border">Cód.Prov</th>
+                    <th class="border">Proveedor</th>
+                    <th class="border">Observaciones</th>
+                    <th *ngIf="detalladoSelected != 0" class="border">N°OP</th>
+                    <th *ngIf="detalladoSelected != 0" class="border">N°Factura</th>
+                    <th *ngIf="detalladoSelected != 0" class="border">Fecha Fact.</th>
+                </tr>
+            </thead>
+            <tbody>             
+                <tr *ngFor="let r of dataPrint">
+                    <td class="border font text-align-center">{{r.fechaEmitido | date: 'dd/MM/yyyy'}}</td>
+                    <td class="border font text-align-center">{{r.fechaCheque | date: 'dd/MM/yyyy'}}</td>
+                    <td class="border font text-align-center">{{r.extraccion}}</td>
+                    <td class="border font text-align-center">{{r.chequera}}</td>
+                    <td class="border font text-align-center">{{r.numeroCheque}}</td>
+                    <td class="border font text-align-center">{{r.estado}}</td>
+                    <td class="border font text-align-right">{{r.importeDebe}}</td>
+                    <td class="border fontSmall text-align-center">{{r.codigoProveedor}}</td>
+                    <td class="border font">{{r.nombreProveedor}}</td>
+                    <td class="border font">{{r.observaciones}}</td>
+                    <td *ngIf="r.numeroOp != null" class="border fontSmall text-align-center">{{r.numeroOp}}</td>
+                    <td *ngIf="r.numeroFactura != null" class="border fontSmall text-align-center">{{r.numeroFactura}}</td>
+                    <td *ngIf="r.fechaFactura != null" class="border fontSmall text-align-center">{{r.fechaFactura | date: 'dd/MM/yyyy'}}</td>
+
+                </tr> 
+            </tbody>
+        </table>
+        <br>
+        <div class="row text-align-right">
+            <strong>Total: {{total | number: '.2-2'}}</strong> 
+        </div>
+    </div>
+</div>
+
+
+
+
+<ng-template #modal let-modal>
+    <div class="modal-header">
+        <h5 class="modal-title text-align-center">Modificar Valores</h5>
+        <button type="button" class="btn-close" (click)="modal.dismiss('Cross click')"></button>
+    </div>
+  
+    <div class="modal-body p-2" [formGroup]="datosForm">
+        <div class="row mb-2"> 
+            <div class="col-md-8 input-group">
+                <div class="input-group-prepend input-group-sm size-importe">
+                    <span class="input-group-text">N° Interno:</span>
+                </div>
+                <div class="input-group-prepend input-group-sm size-cliente-input mr-1">
+                    <input class="form-control">
+                </div>
+            </div>
+        </div>
+        <div class="row mb-2"> 
+            <div class="col-md-12 input-group border-bottom">
+                <label>Datos del Cheque:</label>
+            </div>
+        </div>
+        <div class="row mb-2"> 
+            <div class="col-md-12 input-group">
+                <div class="input-group-prepend input-group-sm size-importe">
+                    <span class="input-group-text">Importe:</span>
+                </div>
+                <div class="input-group-prepend input-group-sm size-cliente-input mr-2">
+                    <input class="form-control">
+                </div>
+                <div class="input-group-prepend input-group-sm size-importe">
+                    <span class="input-group-text">Cliente:</span>
+                </div>
+                <div class="input-group-prepend input-group-sm size-cliente-input">
+                    <input class="form-control">
+                </div>
+                <div class="input-group-prepend input-group-sm size-cliente-input2 ">
+                    <input class="form-control">
+                </div>
+            </div>
+        </div>
+        <div class="row mb-2"> 
+            <div class="col-md-12 input-group border-bottom">
+                <label>Datos a Modificar:</label>
+            </div>
+        </div>
+        <div class="row mb-2"> 
+            <div class="col-md-12 input-group">
+                <div class="input-group-prepend input-group-sm size-cheque">
+                    <span class="input-group-text">Fecha Cheque:</span>
+                </div>
+                <div class="input-group-prepend input-group-sm size-fecha-input mr-2">
+                    <input type="date" 
+                    class="form-control" 
+                    [ngModel]="hasta | date:'yyyy-MM-dd' : 'UTC'"  
+                    (ngModelChange)="setHasta($event)"  
+                    aria-label="Sizing example input" 
+                    aria-describedby="inputGroup-sizing-sm">
+                </div>
+                <div class="input-group-prepend input-group-sm size-sucursal">
+                    <span class="input-group-text">Sucursal:</span>
+                </div>
+                <div class="input-group-prepend input-group-sm size-sucursal-input mr-2">
+                    <input class="form-control">
+                </div>
+                <div class="input-group-prepend input-group-sm size-plaza">
+                    <span class="input-group-text">Plaza:</span>
+                </div>
+                <div class="input-group-prepend input-group-sm size-plaza-input mr-2">
+                    <input class="form-control">
+                </div>
+                <div class="input-group-prepend input-group-sm size-numero-cheque">
+                    <span class="input-group-text">N° Cheque:</span>
+                </div>
+                <div class="input-group-prepend input-group-sm size-input-numero-cheque">
+                    <input class="form-control">
+                </div>
+                
+            </div>
+        </div>
+        <div class="row mb-2"> 
+            <div class="col-md-12 input-group">
+                <div class="input-group-prepend input-group-sm size-banco">
+                    <span class="input-group-text">Banco:</span>
+                </div>
+                <div class="input-group-prepend input-group-sm size-banco-input mr-2">
+                    <input class="form-control">
+                </div>
+                <div class="input-group-prepend input-group-sm size-importe">
+                    <span class="input-group-text">Fecha Mov:</span>
+                </div>
+                <div class="input-group-prepend input-group-sm size-fecha-input mr-2">
+                    <input type="date" 
+                    class="form-control" 
+                    [ngModel]="hasta | date:'yyyy-MM-dd' : 'UTC'"  
+                    (ngModelChange)="setHasta($event)"  
+                    aria-label="Sizing example input" 
+                    aria-describedby="inputGroup-sizing-sm">
+                </div>
+                <div class="input-group-prepend input-group-sm size-cupon">
+                    <span class="input-group-text">N° Cupón:</span>
+                </div>
+                <div class="input-group-prepend input-group-sm size-cupon-input">
+                    <input class="form-control">
+                </div>
+                
+            </div>
+        </div>
+
+    </div>
+  
+    <div class="modal-footer">
+        <button (click)="save(); modal.close('Save click');" class="btn btn-primary btn-size mx-2" data-bs-toggle="tooltip" data-bs-placement="top" title="Guardar"> 
+            <i class="fa fa-save"></i>
+        </button>
+        <button (click)="modal.close('Save click')" class="btn btn-danger btn-size mx-2" data-bs-toggle="tooltip" data-bs-placement="top" title="Salir"> 
+            <i class="fa fa-sign-out-alt"></i>
+        </button>
+    </div>
+  
+</ng-template>

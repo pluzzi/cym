@@ -1,0 +1,258 @@
+<div class="row-fluid justify-content-center ">
+    <div class="col-md-6 offset-md-3">
+        <div class="card shadow bg-light">
+            <div class="card-header text-align-center">
+                Usuarios de Fondo Fijo
+                <button class="btn btn-danger btn-sm m-0 float-end" (click)="home()" data-bs-toggle="tooltip" data-bs-placement="top" title="Salir"> 
+                    <i class="fa fa-sign-out-alt"></i>
+                </button>
+            </div>
+            
+            <div class="row p-1">
+                <div class="col-md-12 mb-1">
+                    <input style="width: 150px; height: 31px;" (keydown)="keyDown($event)" class="form-control float-start" placeholder="Buscar" [(ngModel)]="searchValue">
+
+                    <button class="btn btn-success btn-sm mr-1  float-end"  (click)="exportarUsuarios()" data-bs-toggle="tooltip" data-bs-placement="top" title="Exportar a Excel"> 
+                        <i class="fa fa-file-excel"></i>
+                    </button>
+                    <button class="btn btn-secondary btn-sm mr-1 float-end "  (click)="printUsuarios()" data-bs-toggle="tooltip" data-bs-placement="top" title="Imprimir"> 
+                        <i class="fa fa-print"></i>
+                    </button>
+                    <button class="btn btn-secondary btn-sm mr-1 float-start"  (click)="search()" data-bs-toggle="tooltip" data-bs-placement="top" title="Buscar"> 
+                        <i class="fa fa-search"></i>
+                    </button>
+    
+                    <button class="btn btn-danger btn-sm mr-1 float-end " (click)="trashUsuario()" data-bs-toggle="tooltip" data-bs-placement="top" title="Borrar"> 
+                        <i class="fa fa-trash"></i>
+                    </button>
+
+                    <button class="btn btn-primary btn-sm mr-1 float-end " (click)="addUsuario()" data-bs-toggle="tooltip" data-bs-placement="top" title="Agregar"> 
+                        <i class="fa fa-plus"></i>
+                    </button>
+                </div>
+                
+                <ag-grid-angular
+                    style="width: 100%; height: 230px"
+                    class="ag-theme-alpine"
+                    [rowData]="usuarios"
+                    [columnDefs]="columnDefsUsuarios"
+                    [defaultColDef]="defaultColDefUsuarios"
+                    (gridReady)="onGridReadyUsuarios($event)"
+                    [rowHeight]="25"
+                    rowSelection='single'
+                    (selectionChanged)="onSelectionChangedUsuarios($event)"
+                    colResizeDefault="shift"
+                    [enterMovesDown]="false"
+                    [enterMovesDownAfterEdit]="false"
+                    (cellKeyPress)="onCellKeyPressUsuarios($event)"
+                    (cellDoubleClicked)="editUsuario()">
+                </ag-grid-angular>
+            
+            </div>
+
+            <div class="row p-1">
+                <div class="col-md-12 mb-1">
+                    <button class="btn btn-success btn-sm mr-1  float-end"  (click)="exportarTarjetas()" data-bs-toggle="tooltip" data-bs-placement="top" title="Exportar a Excel"> 
+                        <i class="fa fa-file-excel"></i>
+                    </button>
+                    <button class="btn btn-secondary btn-sm mr-1 float-end "  (click)="printTarjetas()" data-bs-toggle="tooltip" data-bs-placement="top" title="Imprimir"> 
+                        <i class="fa fa-print"></i>
+                    </button>
+                    <button class="btn btn-danger btn-sm mr-1 float-end " (click)="trashTarjeta()" data-bs-toggle="tooltip" data-bs-placement="top" title="Borrar Tarjeta"> 
+                        <i class="fa fa-trash"></i>
+                    </button>
+
+                    <button class="btn btn-primary btn-sm mr-1 float-end " (click)="addTarjeta()" data-bs-toggle="tooltip" data-bs-placement="top" title="Agregar Tarjeta"> 
+                        <i class="fa fa-plus"></i>
+                    </button>
+                </div>
+                <ag-grid-angular
+                    style="width: 100%; height: calc(100vh - 460px)"
+                    class="ag-theme-alpine mb-1"
+                    [rowData]="tarjetas"
+                    [columnDefs]="columnDefsTarjetas"
+                    [defaultColDef]="defaultColDefTarjetas"
+                    (gridReady)="onGridReadyTarjetas($event)"
+                    [rowHeight]="25"
+                    rowSelection='single'
+                    (selectionChanged)="onSelectionChangedTarjetas($event)"
+                    colResizeDefault="shift"
+                    [enterMovesDown]="false"
+                    [enterMovesDownAfterEdit]="false"
+                    (cellKeyPress)="onCellKeyPressTarjetas($event)"
+                    (cellDoubleClicked)="editTarjeta()">
+                </ag-grid-angular>
+
+                <div class="col-md-12 mb-1">
+                    <button class="btn btn-primary btn-sm float-end"  (click)="saveTarjetas()" data-bs-toggle="tooltip" data-bs-placement="top" title="Guardar Tarjetas"> 
+                        <i class="fa fa-save"></i>
+                    </button>
+                </div>
+                    
+                
+            </div>
+        
+        </div>
+    </div>
+</div>
+
+<ng-template #modalUsuario let-modal>
+    <div class="modal-header">
+        <h5 class="modal-title text-align-center">{{ getModalUsuarioTitle() }}</h5>
+        <button type="button" class="btn-close" (click)="modal.dismiss('Cross click')"></button>
+    </div>
+  
+    <div class="modal-body p-3">
+        <form [formGroup]="usuarioForm">
+            <div class="row mb-2">
+                <div class="col-md-3">
+                    <div class="input-group">
+                        <span class="input-group-text size-label">Código:</span>
+                        <input type="text" class="form-control" formControlName="codigo">                    
+                    </div>
+                </div>
+    
+                <div class="col-md-9">
+                    <div class="input-group">
+                        <span class="input-group-text size-label">Nombre:</span>
+                        <input type="text" class="form-control" formControlName="nombre">
+                    </div>
+                </div>
+            </div>
+    
+        </form>
+        
+    </div>
+  
+    <div class="modal-footer">
+        <button (click)="saveUsuario(); modal.close('Save click');" class="btn btn-primary btn-size mx-2" data-bs-toggle="tooltip" data-bs-placement="top" title="Guardar"> 
+            <i class="fa fa-save"></i>
+        </button>
+        <button (click)="modal.close('Save click')" class="btn btn-danger btn-size mx-2" data-bs-toggle="tooltip" data-bs-placement="top" title="Salir"> 
+            <i class="fa fa-sign-out-alt"></i>
+        </button>
+    </div>
+  
+</ng-template>
+
+<ng-template #modalTarjeta let-modal>
+    <div class="modal-header">
+        <h5 class="modal-title text-align-center">{{ getModalTarjetaTitle() }}</h5>
+        <button type="button" class="btn-close" (click)="modal.dismiss('Cross click')"></button>
+    </div>
+  
+    <div class="modal-body p-3">
+        <form [formGroup]="tarjetaForm">
+            <div class="row mb-2">
+                <div class="col-md-3">
+                    <div class="input-group">
+                        <span class="input-group-text size-label">Moneda:</span>
+                        <input (keydown)="monedaKeyDown($event)" type="text" class="form-control" formControlName="moneda">                    
+                    </div>
+                </div>
+    
+                <div class="col-md-9" >
+                    <div class="input-group">
+                        <span class="input-group-text size-label">Nombre:</span>
+                        <input type="text" class="form-control disabled" formControlName="nombreMoneda">
+                    </div>
+                </div>
+            </div>
+
+            <div class="row mb-2">
+                <div class="col-md-6">
+                    <div class="input-group">
+                        <span class="input-group-text size-label">Nro Tarjeta:</span>
+                        <input type="text" class="form-control" formControlName="numero">                    
+                    </div>
+                </div>
+    
+                <div class="col-md-6">
+                    <div class="input-group">
+                        <span class="input-group-text size-label">Vencimiento:</span>
+                        <input 
+                            type="date" 
+                            class="form-control" 
+                            formControlName="vencimiento">
+                    </div>
+                </div>
+            </div>
+    
+        </form>
+        
+    </div>
+  
+    <div class="modal-footer">
+        <button (click)="saveTarjeta(); modal.close('Save click');" class="btn btn-primary btn-size mx-2" data-bs-toggle="tooltip" data-bs-placement="top" title="Guardar"> 
+            <i class="fa fa-save"></i>
+        </button>
+        <button (click)="modal.close('Save click')" class="btn btn-danger btn-size mx-2" data-bs-toggle="tooltip" data-bs-placement="top" title="Salir"> 
+            <i class="fa fa-sign-out-alt"></i>
+        </button>
+    </div>
+  
+</ng-template>
+
+<div  id="print_tarjetas" class="visibility">
+        
+    <div class="row text-align-right">
+        <strong>Fecha Emisión: {{fechaEmision | date: 'dd/MM/yyyy'}}</strong> 
+    </div>
+    <br>
+    
+    <div class="text-align-center ">
+        <strong>Usuarios Fondo Fijo</strong>
+    </div>
+    <br>
+    <div class="">
+        <table class="table border">
+            <thead class="border">
+                <tr>
+                    <th class="border">Código</th>
+                    <th class="border">Moneda</th>
+                    <th class="border">N° Tarjeta</th>
+                    <th class="border">Vencimiento</th>
+
+                </tr>
+            </thead>
+            <tbody>             
+                <tr *ngFor="let t of dataPrintTarjetas">
+                    <td class="border font">{{t.moneda}}</td>
+                    <td class="border font">{{t.nombreMoneda}}</td>
+                    <td class="border font">{{t.numero}}</td>
+                    <td class="border font">{{t.vencimiento}}</td>
+                </tr> 
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<div  id="print_usuarios" class="visibility">
+        
+    <div class="row text-align-right">
+        <strong>Fecha Emisión: {{fechaEmision | date: 'dd/MM/yyyy'}}</strong> 
+    </div>
+    <br>
+    
+    <div class="text-align-center ">
+        <strong>Usuarios Fondo Fijo</strong>
+    </div>
+    <br>
+    <div class="">
+        <table class="table border">
+            <thead class="border">
+                <tr>
+                    <th class="border">Código</th>
+                    <th class="border">Nombre</th>
+
+                </tr>
+            </thead>
+            <tbody>             
+                <tr *ngFor="let u of dataPrintUsuarios">
+                    <td class="border font">{{u.codigo}}</td>
+                    <td class="border font">{{u.nombre}}</td>
+                </tr> 
+            </tbody>
+        </table>
+    </div>
+</div>

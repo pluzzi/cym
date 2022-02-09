@@ -1,0 +1,138 @@
+<div class="row-fluid justify-content-center">
+    <div class="col-md-12">
+        <div class="card shadow bg-light">
+            <div class="card-title display inline">
+                <div class="card-header text-align-center">
+                    Transferencias de Fondos
+                    <button class="btn btn-danger btn-sm m-0 float-end size-button"  (click)="home()" data-bs-toggle="tooltip" data-bs-placement="top" title="Salir"> 
+                        <i class="fa fa-sign-out-alt"></i>
+                    </button>
+                    
+                    <!--
+                    <button class="btn btn-secondary btn-sm float-end size-button mr-1" data-bs-toggle="tooltip" data-bs-placement="top" title="Imprimir"> 
+                        <i class="fa fa-print"></i>
+                    </button>
+                    -->
+                    
+                    
+                    <button (click)="trash()" class="btn btn-danger btn-sm float-end size-button mr-1"  data-bs-toggle="tooltip" data-bs-placement="top" title="Borrar"> 
+                        <i class="fa fa-trash"></i>
+                    </button>    
+                    <button (click)="limpiar()" class="btn btn-success btn-sm float-end size-button mr-1" data-bs-toggle="tooltip" data-bs-placement="top" title="Limpiar"> 
+                        <i class="fa fa-eraser"></i>
+                    </button>                
+                    
+                    <button (click)="saveClick()" class="btn btn-primary btn-sm float-end size-button mr-1" data-bs-toggle="tooltip" data-bs-placement="top" title="Grabar"> 
+                        <i class="fa fa-save"></i>
+                    </button>
+                    
+                </div>
+            </div>   
+            <div class="card-body" [formGroup]="dataForm">
+                <div class="row">
+                    <div class="col-md-2">
+                        <div class="input-group input-group-sm">
+                            <span class="input-group-text">Transferencia</span>
+                            <input (keydown)="transferenciaKeyDown($event)" type="text" class="form-control" formControlName="transferencia">
+                        </div>
+                    </div>
+
+                    <div class="col-md-2">
+                        <div class="input-group input-group-sm">
+                            <span class="input-group-text">Fecha</span>
+                            <input  type="date" class="form-control" formControlName="fecha">
+                        </div>
+                    </div>
+
+                    <div class="col-md-1">
+                        <div class="input-group input-group-sm">
+                            <span class="input-group-text">Turno</span>
+                            <input type="text" class="form-control" formControlName="turno">
+                        </div>
+                    </div>
+
+                    <div class="col-md-4">
+                        <div class="input-group input-group-sm">
+                            <span class="input-group-text">Concepto</span>
+                            <input type="text" class="form-control" formControlName="concepto">
+                        </div>
+                    </div>
+                    <div class="col-md-2">
+                        <div class="input-group input-group-sm">
+                            <span class="input-group-text">Asiento</span>
+                            <input type="text" class="form-control disabled" formControlName="asiento">
+                        </div>
+                    </div>
+                </div>
+
+                <div class="card-header text-align-center">
+                    INGRESOS
+                </div>
+
+                <ag-grid-angular
+                    style="width: 100%; height: calc(50vh - 165px);"
+                    class="ag-theme-alpine"
+                    [rowData]="ingresos"
+                    [columnDefs]="columnDefsIngresos"
+                    [defaultColDef]="defaultColDefIngresos"
+                    (gridReady)="onGridReadyIngresos($event)"
+                    rowSelection='single'
+                    [rowHeight]="20"
+                    (cellKeyPress)="onCellKeyPressIngresos($event)">
+                </ag-grid-angular>
+
+                <div class="row">
+                    <div class="offset-md-10 col-md-2">
+                        <div class="input-group">
+                            <div class="input-group input-group-sm">
+                                <span class="input-group-text">Total</span>
+                                <input type="text" class="form-control text-align-right disabled" formControlName="totalIngresos">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="card-header text-align-center">
+                    EGRESOS
+                </div>
+
+                <ag-grid-angular
+                    style="width: 100%; height: calc(50vh - 170px);"
+                    class="ag-theme-alpine"
+                    [rowData]="egresos"
+                    [columnDefs]="columnDefsEgresos"
+                    [defaultColDef]="defaultColDefEgresos"
+                    (gridReady)="onGridReadyEgresos($event)"
+                    rowSelection='single'
+                    [rowHeight]="20"
+                    (cellKeyPress)="onCellKeyPressEgresos($event)">
+                </ag-grid-angular>
+            
+                <div class="row mt-1">
+                    <div class="offset-md-10 col-md-2">
+                        <div class="input-group">
+                            <div class="input-group input-group-sm">
+                                <span class="input-group-text">Total</span>
+                                <input type="text" class="form-control text-align-right disabled" formControlName="totalEgresos">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row mt-1">
+                    <div class="offset-md-10 col-md-2">
+                        <div class="input-group">
+                            <div class="input-group input-group-sm">
+                                <span class="input-group-text">Diferencia</span>
+                                <input type="text" class="form-control text-align-right disabled" formControlName="diferencia">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            
+            </div>
+                    
+        </div>
+    </div>
+</div>
+

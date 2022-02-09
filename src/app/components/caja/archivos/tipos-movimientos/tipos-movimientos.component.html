@@ -1,0 +1,89 @@
+<div class="row-fluid justify-content-center">
+    <div class="col-md-4 offset-md-4">
+        <div class="card shadow bg-light">
+            <div class="card-title display inline">
+                <div class="card-header text-align-center">
+                    Tipos de Movimientos
+                                        
+                    <!--
+                    <button class="btn btn-secondary btn-sm mr-1 float-end" data-bs-toggle="tooltip" data-bs-placement="top" title="Imprimir"> 
+                        <i class="fa fa-print"></i>
+                    </button>
+                    <button class="btn btn-success btn-sm mr-1 float-end" data-bs-toggle="tooltip" data-bs-placement="top" title="Exportar a Excel"> 
+                        <i class="fa fa-file-excel"></i>
+                    </button>
+                    -->
+
+                    <button class="btn btn-danger btn-sm float-end"  (click)="home()" data-bs-toggle="tooltip" data-bs-placement="top" title="Salir"> 
+                        <i class="fa fa-sign-out-alt"></i>
+                    </button>
+
+                    <button class="btn btn-danger btn-sm mr-1 float-end"  (click)="trash()" data-bs-toggle="tooltip" data-bs-placement="top" title="Borrar"> 
+                        <i class="fa fa-trash"></i>
+                    </button>
+
+                    <button class="btn btn-primary btn-sm mr-1 float-end"  (click)="add()" data-bs-toggle="tooltip" data-bs-placement="top" title="Agregar"> 
+                        <i class="fa fa-plus"></i>
+                    </button>
+                </div>
+            </div>
+
+            <div class="card-body p-1">
+                <div class="row mb-1">
+                    <div class="col-md-12 form-group">
+                        <button class="btn btn-secondary btn-sm float-end"  (click)="search()" data-bs-toggle="tooltip" data-bs-placement="top" title="Buscar"> 
+                            <i class="fa fa-search"></i>
+                        </button>
+                        <input style="width: 150px; height: 31px;" (keydown)="keyDown($event)" class="form-control float-end" placeholder="Buscar" [(ngModel)]="searchValue">
+                    </div>
+                </div>
+                
+                <ag-grid-angular
+                    #grid
+                    style="width: 100%; height: calc(100vh - 150px);"
+                    class="ag-theme-alpine"
+                    [rowData]="movimientos"
+                    [columnDefs]="columnDefs"
+                    [defaultColDef]="defaultColDef"
+                    (gridReady)="onGridReady($event)"
+                    [rowHeight]="25"
+                    rowSelection='single'
+                    (selectionChanged)="onSelectionChanged($event)"
+                    (cellDoubleClicked)="edit()">
+                </ag-grid-angular>
+            </div>
+                
+        </div>
+    </div>
+</div>
+
+
+<ng-template #modal let-modal>
+    <div class="modal-header">
+        <h5 class="modal-title text-align-center">{{ getModalTitle()}}</h5>
+        <button type="button" class="btn-close" (click)="modal.dismiss('Cross click')"></button>
+    </div>
+  
+    <div class="modal-body p-3">
+        <form [formGroup]="movimientoForm">
+            <div class="row mb-2">
+                <div class="col-md-12">
+                    <div class="input-group">
+                        <span class="input-group-text size-label">Nombre:</span>
+                        <input type="text" class="form-control" formControlName="nombre">                    
+                    </div>
+                </div>
+            </div>
+        </form>
+    </div>
+  
+    <div class="modal-footer">
+        <button (click)="save(); modal.close('Save click');" class="btn btn-primary btn-size mx-2" data-bs-toggle="tooltip" data-bs-placement="top" title="Guardar"> 
+            <i class="fa fa-save"></i>
+        </button>
+        <button (click)="modal.close('Save click')" class="btn btn-danger btn-size mx-2" data-bs-toggle="tooltip" data-bs-placement="top" title="Salir"> 
+            <i class="fa fa-sign-out-alt"></i>
+        </button>
+    </div>
+  
+</ng-template>

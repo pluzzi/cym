@@ -1,0 +1,146 @@
+
+.e-attr{
+    text-align: center;
+}
+
+
+.border{
+    border: 1px solid gray;
+    border-radius: 10px;
+    margin-bottom: 10px;
+    margin-top: 5px;
+}
+
+.size-label-numero{
+    width: 85px !important;
+}
+
+.size-label-tipos{
+    width: 160px !important;
+}
+
+.size-imput-numero{
+    width: 85px !important;
+}
+.size-label-fecha{
+  width: 73px !important;
+}
+
+.size-imput-fecha{
+    width: 145px !important;
+}
+
+.size-imput-turno{
+  width: 35px !important;
+}
+
+.size-label-turno{
+  width: 73px !important;
+}
+
+.size-imput-tipo{
+  width: 310px !important;
+}
+
+.size-label-tipo{
+  width: 85px !important;
+}
+
+.size-imput-asiento{
+  width: 102px !important;
+}
+
+.size-label-asiento{
+  width: 95px !important;
+}
+
+.size-imput-concepto{
+  width: 380px !important;
+}
+
+.size-totalCuentas{
+  width: 120px !important;
+}
+
+.size-totaldebe{
+  width: 170px !important;
+}
+
+.size-totalhaber{
+  width: 170px !important;
+}
+
+.size-diferencia{
+  width: 200px;
+}
+
+
+.size-label-diferencia{
+  width: 120px !important;
+}
+
+.size-imput-diferencia{
+  width: 120px !important;
+}
+
+
+.size-numero{
+  width: 180px;
+}
+
+.size-fecha{
+  width: 208px;
+}
+.size-moneda{
+  width: 400px;
+}
+
+.size-valores{
+  width: 155px;
+}
+
+.size-button{
+  height: 31px;
+  width: 30px;
+}
+
+.size-check{
+  height: 20px;
+}
+
+.size-tipo{
+  width: 290px;
+}
+
+.size-asiento{
+  width: 160px;
+}
+
+.size-concepto{
+  width: 490px;
+}
+
+.visibility{
+  display: none;
+}
+
+.ag-pivot-off .ag-header-group-cell {
+  font-size: 5px;
+  color: red;
+}
+
+.ag-header-cell-text{
+  font-size: 5px;
+}
+
+.size-turno{
+  width: 110px;
+}
+
+.size-movimientos{
+  width: 290px;
+}
+
+.size-estado{
+  width: 420px;
+}

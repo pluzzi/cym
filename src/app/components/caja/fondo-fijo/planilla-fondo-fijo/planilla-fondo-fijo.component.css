@@ -1,0 +1,210 @@
+
+.e-attr{
+  text-align: center;
+}
+
+
+.borderIva{
+  border: 1px solid gray;
+    
+  margin: 10px;
+}
+
+.size-label-numero{
+  width: 85px !important;
+}
+
+.size-label-tipos{
+  width: 160px !important;
+}
+
+.size-imput-numero{
+  width: 85px !important;
+}
+.size-label-fecha{
+width: 73px !important;
+}
+
+.size-imput-fecha{
+  width: 145px !important;
+}
+
+.size-imput-turno{
+width: 35px !important;
+}
+
+.size-label-turno{
+width: 73px !important;
+}
+
+.size-imput-tipo{
+width: 310px !important;
+}
+
+.size-label-tipo{
+width: 85px !important;
+}
+
+.size-imput-asiento{
+width: 102px !important;
+}
+
+.size-label-asiento{
+width: 95px !important;
+}
+
+.size-imput-concepto{
+width: 380px !important;
+}
+
+.size-totalCuentas{
+width: 120px !important;
+}
+
+.size-totaldebe{
+width: 170px !important;
+}
+
+.size-totalhaber{
+width: 170px !important;
+}
+
+.size-diferencia{
+width: 200px;
+}
+
+
+.size-label-diferencia{
+width: 120px !important;
+}
+
+.size-imput-diferencia{
+width: 120px !important;
+}
+
+
+.size-numero{
+width: 180px;
+}
+
+.size-fecha{
+width: 255px;
+}
+
+.size-fechaCierre{
+width: 240px;
+}
+
+.size-destino{
+width: 500px;
+}
+
+.size-button{
+height: 31px;
+width: 30px;
+}
+
+.size-check{
+height: 20px;
+}
+
+.size-tipo{
+width: 290px;
+}
+
+.size-asiento{
+width: 160px;
+}
+
+.size-concepto{
+width: 490px;
+}
+
+.size-opciones{
+width: 180px;
+}
+
+.size-usuarios{
+width: 260px;
+}
+
+.visibility{
+display: none;
+}
+
+.size-input-proveedorCodigo{
+width: 70px;
+}
+
+.size-input-proveedorNombre{
+width: 250px;
+}
+
+.disabled{
+pointer-events: none;
+}
+
+.size-pdf{
+width: 770px;
+}
+
+
+.size-planilla{
+width: 140px;
+}
+
+.size-movimiento{
+width: 140px;
+}
+
+.size-numeroFacturaLetra{
+width: 30px;
+}
+
+.size-numeroFacturaNumero1{
+width: 60px;
+}
+
+.size-numeroFacturaNumero2{
+width: 90px;
+}
+
+.size-nombre-input{
+width: 395px;
+}
+
+.size-iva{
+width: 50px;
+}
+
+.size-fecha-input{
+width: 150px;
+}
+
+.size-archivoPdf-input{
+width: 900px;
+}
+
+.sizeInput{
+width: 120px;
+}
+
+.sizeSpan{
+width: 90px;
+}
+
+.margenTotal{
+margin-left: 212px; 
+}
+
+.margenFactura{
+margin-left: 350px; 
+}
+
+.marginGrillaDetalle{
+  margin-left: 280px;
+}
+
+.sizeTotal{
+  width: 100px;
+}

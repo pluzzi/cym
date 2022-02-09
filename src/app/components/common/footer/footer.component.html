@@ -1,0 +1,22 @@
+<div class="footer bg-dark">
+    <div class="float-end mx-4">
+        <strong >Copyright</strong> &copy; {{fecha | date:'yyyy'}}
+    </div>
+    <div class="float-start mx-2">
+        <i class="fa fa-user"></i> {{usuario.usuario}}
+    </div>
+    <div class="float-start mx-2">
+        <i class="fa fa-database"></i> {{data.gestion}} 
+    </div>
+    <div class="float-start mx-2">
+        <i class="fa fa-database"></i> {{data.contabilidad}} 
+    </div>
+    <div class="float-start mx-2">
+        <i class="fa fa-server"></i> {{data.server}}
+    </div>
+    <!--
+    <div class="float-start mx-2">
+        <i class="fa fa-chart-bar"></i> Ejercicio: {{ejercicio?.fechaInicio | date: 'dd/MM/YYYY'}} - {{ejercicio?.fechaFin | date: 'dd/MM/YYYY'}} 
+    </div>
+    -->
+</div>

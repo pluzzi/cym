@@ -1,0 +1,156 @@
+<div class="row-fluid justify-content-center">
+    <div class="col-md-12">
+        <div class="card shadow bg-light">
+            <div class="card-title display inline">
+                <div class="card-header text-align-center">
+                    Depósitos Bancarios
+                    <button class="btn btn-danger btn-sm m-0 float-end size-button"  (click)="home()" data-bs-toggle="tooltip" data-bs-placement="top" title="Salir"> 
+                        <i class="fa fa-sign-out-alt"></i>
+                    </button>
+                    <button class="btn btn-secondary btn-sm float-end size-button mr-1" (click)="print()" data-bs-toggle="tooltip" data-bs-placement="top" title="Imprimir"> 
+                        <i class="fa fa-print"></i>
+                    </button>                  
+                    <button class="btn btn-danger btn-sm float-end size-button mr-1"  (click)="trash()" data-bs-toggle="tooltip" data-bs-placement="top" title="Borrar"> 
+                        <i class="fa fa-trash"></i>
+                    </button>
+                    <button class="btn btn-success btn-sm float-end size-button mr-1"(click)="clear()" data-bs-toggle="tooltip" data-bs-placement="top" title="Limpiar"> 
+                        <i class="fa fa-eraser"></i>
+                    </button>
+                    <button [disabled]="this.dataForm.controls['deposito'].value != '0'" class="btn btn-primary btn-sm float-end size-button mr-1" (click)="saveClick()" data-bs-toggle="tooltip" data-bs-placement="top" title="Grabar"> 
+                        <i class="fa fa-save"></i>
+                    </button>                    
+                </div>
+            </div>   
+            <div class="card-body" [formGroup]="dataForm">
+                <div class="row">
+                    <div class="col-md-2">
+                        <div class="input-group input-group-sm">
+                            <span class="input-group-text">Depósito</span>
+                            <input (keydown)="movKeyDown($event)" type="text" class="form-control" formControlName="deposito">
+                        </div>
+                    </div>
+
+                    <div class="col-md-2">
+                        <div class="input-group input-group-sm">
+                            <span class="input-group-text">Fecha</span>
+                            <input  type="date" class="form-control" formControlName="fecha">
+                        </div>
+                    </div>
+
+                    <div class="col-md-3">
+                        <div class="input-group input-group-sm">
+                            <span class="input-group-text">Banco</span>
+                            <select class="form-control" formControlName="moneda">
+                                <option *ngFor="let t of monedasBancos" [ngValue]="t.codigo">{{t.codigo}} - {{t.nombre}}</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="col-md-1">
+                        <div class="input-group input-group-sm">
+                            <span class="input-group-text">Turno</span>
+                            <input type="text" class="form-control" formControlName="turno">
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row mt-1 mb-1">
+                    <div class="col-md-4">
+                        <div class="input-group input-group-sm">
+                            <span class="input-group-text">Comprobante</span>
+                            <input type="text" class="form-control" formControlName="comprobante">
+                        </div>
+                    </div>
+                    <div class="col-md-2">
+                        <div class="input-group input-group-sm">
+                            <span class="input-group-text">Asiento</span>
+                            <input type="text" class="form-control disabled" formControlName="asiento">
+                        </div>
+                    </div>
+
+                </div>
+                                
+                <ag-grid-angular
+                    style="width: 100%; height: calc(100vh - 220px);"
+                    class="ag-theme-alpine"
+                    [rowData]="depositos"
+                    [columnDefs]="columnDefs"
+                    [defaultColDef]="defaultColDef"
+                    (gridReady)="onGridReady($event)"
+                    [rowHeight]="20"
+                    [getRowStyle]="getRowStyle"
+                    rowSelection='single'
+                    (cellKeyPress)="onCellKeyPress($event)">
+                </ag-grid-angular>
+
+                <div class="row">
+                    <div class="offset-md-10 col-md-2">
+                        <div class="input-group">
+                            <div class="input-group input-group-sm">
+                                <span class="input-group-text">Total:</span>
+                                <input type="text" class="form-control text-align-right disabled" formControlName="total">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        
+                    
+        </div>
+    </div>
+</div>
+
+<div  id="print_depositos" class="visibility">
+    
+    <div class="border font">
+        <div class="row border-bottom">
+            <div class="wrapper p-10">
+                <div class="text-align-left">
+                    <strong>CYM Materiales S.A.</strong>
+                    <p>Brig. Estanislao López N°6</p>
+                    <p>(S2108AIB) Soldini - Santa Fe - Argentina</p>
+                    <p>Tel: 0341-4901100 - Fax: 0341-4901366</p>
+                </div>
+                <div class=" p-10">
+                    <p><strong>N° Depósito:</strong> {{dataForm.controls['deposito'].value}}</p>
+                    <p>Fecha: {{dataForm.controls['fecha'].value | date: 'dd/MM/yyyy'}}</p> 
+                </div>
+            </div>
+        </div>
+        
+        <div class="row border-bottom p-10">
+            <p><strong>BANCO:</strong> {{ getMonedaNombre()}} - {{dataForm.controls['moneda'].value}} </p>
+            <p><strong>N° COMPROBANTE:</strong> {{dataForm.controls['comprobante'].value}} </p>
+            <p><strong>N° ASIENTO:</strong> {{dataForm.controls['asiento'].value}} </p>
+        </div>
+        
+        <div>
+            <table class="table border">
+                <thead class="border">
+                    <tr class="border font">
+                        <th class="border ">DETALLE DE MONEDAS</th>
+                        <th class="border ">IMPORTE</th>
+                    </tr>
+                </thead>
+                <tbody>             
+                    <tr *ngFor="let r of dataPrint; let i = index" class="border">
+                        <td class="font border text-align-left">{{r.interno}} {{r.nombreMoneda}} {{r.fechaCheque}} {{r.banco}} {{r.sucursal}} {{r.plaza}} {{r.cheque}}</td>
+                        <td class="font border text-align-right">{{r.importe | number: '.2-2'}}</td>
+                    </tr> 
+                </tbody>
+                <tbody>             
+                    <tr class="border">
+                        <td class="font border text-align-center negrita">Total:</td>
+                        <td class="font border text-align-right negrita">{{dataForm.controls['total'].value | number: '.2-2'}} </td>
+                    </tr> 
+                </tbody>
+                
+            </table>
+            
+            
+        </div>
+
+    </div>
+        
+</div>

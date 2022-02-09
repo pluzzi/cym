@@ -1,0 +1,321 @@
+<div class="row-fluid justify-content-center">
+    <div class="col-md-12">
+        <div class="card shadow bg-light">
+            <div class="card-title display inline">
+                <div class="card-header text-align-center">
+                    Ingresos y Egresos
+                    <button class="btn btn-danger btn-sm float-end "  (click)="home()" data-bs-toggle="tooltip" data-bs-placement="top" title="Salir"> 
+                        <i class="fa fa-sign-out-alt"></i>
+                    </button>
+                    <button (click)="print()" class="btn btn-secondary btn-sm float-end mr-1" data-bs-toggle="tooltip" data-bs-placement="top" title="Imprimir"> 
+                        <i class="fa fa-print"></i>
+                    </button>                    
+                    <button (click)="trash()" class="btn btn-danger btn-sm float-end mr-1" data-bs-toggle="tooltip" data-bs-placement="top" title="Imprimir"> 
+                        <i class="fa fa-trash"></i>
+                    </button>
+                    <button (click)="clear()" class="btn btn-success btn-sm float-end mr-1" data-bs-toggle="tooltip" data-bs-placement="top" title="Limpiar"> 
+                        <i class="fa fa-eraser"></i>
+                    </button>
+                    <button (click)="saveClick()" [disabled]="this.dataForm.controls['numero'].value != 0" class="btn btn-primary btn-sm float-end mr-1" data-bs-toggle="tooltip" data-bs-placement="top" title="Grabar"> 
+                        <i class="fa fa-save"></i>
+                    </button>
+                </div>
+            </div>   
+
+            <div class="card-body" [formGroup]="dataForm">
+                <div class="row">
+                    <div class="col-md-2">
+                        <div class="input-group">
+                            <div class="input-group input-group-sm">
+                                <span class="input-group-text">Número</span>
+                                <input (keydown)="numeroKeyDown($event)" type="text" class="form-control" formControlName="numero">
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-md-2">
+                        <div class="input-group">
+                            <div class="input-group input-group-sm">
+                                <span class="input-group-text">Fecha</span>
+                                <input  type="date" 
+                                        class="form-control"
+                                        formControlName="fecha">
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-md-1">
+                        <div class="input-group">
+                            <div class="input-group input-group-sm">
+                                <span class="input-group-text">Turno</span>
+                                <input type="text" class="form-control" formControlName="turno">
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-md-2">
+                        <input (change)="createColumns()" class="form-radio-input mr-1" type="radio" value="1" formControlName="ingresoEgreso"> Ingreso
+                        <input (change)="createColumns()" class="form-radio-input mr-1" type="radio" value="2" formControlName="ingresoEgreso"> Egreso
+                    </div>
+                    
+                </div>
+
+                <div class="row mt-1 mb-1">
+                    <div class="col-md-2">
+                        <div class="input-group">
+                            <div class="input-group input-group-sm">
+                                <span class="input-group-text">Tipo</span>
+                                <select class="form-control" formControlName="tipo">
+                                    <option *ngFor="let t of tipos" [ngValue]="t.codigo">{{t.nombre}}</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-md-2">
+                        <div class="input-group">
+                            <div class="input-group input-group-sm">
+                                <span class="input-group-text">Asiento</span>
+                                <input type="text" class="form-control disabled" formControlName="asiento">
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-md-4">
+                        <div class="input-group">
+                            <div class="input-group input-group-sm">
+                                <span class="input-group-text">Concepto</span>
+                                <input type="text" class="form-control" formControlName="concepto">
+                            </div>
+                        </div>
+                    </div>
+
+                    
+                </div>
+                                
+                <ag-grid-angular
+                    style="width: 100%; height: 95px; "
+                    class="ag-theme-alpine"
+                    [rowData]="movimientosCuenta"
+                    [columnDefs]="columnDefs"
+                    [defaultColDef]="defaultColDef"
+                    (gridReady)="onGridReadyCuentas($event)"
+                    rowSelection='single'
+                    [rowHeight]="20"
+                    [enterMovesDown]="false"
+                    [enterMovesDownAfterEdit]="false"
+                    (cellKeyPress)="onCellKeyPressCuentas($event)">
+                </ag-grid-angular>
+
+                <div class="row mb-1">
+                    <div class="offset-md-10 col-md-2">
+                        <div class="input-group">
+                            <div class="input-group input-group-sm">
+                                <span class="input-group-text">Total</span>
+                                <input type="text" class="form-control disabled text-align-right" formControlName="importeCuentas">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                
+                <ag-grid-angular
+                    style="width: 100%; height: 95px;"
+                    class="ag-theme-alpine"
+                    [rowData]="movimientosRetencion"
+                    [columnDefs]="columnDefs1"
+                    [defaultColDef]="defaultColDef1"
+                    (gridReady)="onGridReadyRetenciones($event)"
+                    [rowHeight]="20"
+                    rowSelection='single'
+                    (cellKeyPress)="onCellKeyPressRetenciones($event)">
+                </ag-grid-angular>
+
+
+                <div class="row mb-1">
+                    <div class="offset-md-8 col-md-2">
+                        <div class="input-group">
+                            <div class="input-group input-group-sm">
+                                <span class="input-group-text">Debe</span>
+                                <input type="text" class="form-control disabled text-align-right" formControlName="importeRetencionesDebe">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-2">
+                        <div class="input-group">
+                            <div class="input-group input-group-sm">
+                                <span class="input-group-text">Haber</span>
+                                <input type="text" class="form-control disabled text-align-right" formControlName="importeRetencionesHaber">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+
+                <ag-grid-angular
+                    style="width: 100%; height: 95px"
+                    class="ag-theme-alpine"
+                    [rowData]="movimientosMoneda"
+                    [columnDefs]="columnDefs2"
+                    [defaultColDef]="defaultColDef2"
+                    (gridReady)="onGridReadyMonedas($event)"
+                    [rowHeight]="20"
+                    rowSelection='single'
+                    (cellKeyPress)="onCellKeyPressMonedas($event)">
+                </ag-grid-angular>
+
+                <div class="row mb-1">
+                    <div class="offset-md-10 col-md-2">
+                        <div class="input-group">
+                            <div class="input-group input-group-sm">
+                                <span class="input-group-text">Total</span>
+                                <input type="text" class="form-control disabled text-align-right" formControlName="importeMonedas">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="offset-md-10 col-md-2">
+                        <div class="input-group">
+                            <div class="input-group input-group-sm">
+                                <span class="input-group-text">Diferencia</span>
+                                <input type="text" class="form-control disabled text-align-right" formControlName="diferencia">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                
+            </div>
+        
+                    
+        </div>
+    </div>
+</div>
+
+<div  id="print_depositos" class="visibility">
+    
+    <div class="border font">
+        <div class="row border-bottom">
+            <div class="wrapper p-10">
+                <div class="text-align-left">
+                    <p style="font-size: 12px;"><strong>CYM Materiales S.A.</strong></p>
+                    <p>Brig. Estanislao López N°6</p>
+                    <p>(S2108AIB) Soldini - Santa Fe - Argentina</p>
+                    <p>Tel: 0341-4901100 - Fax: 0341-4901366</p>
+                </div>
+                <div class=" p-10">
+                    <p><strong>Mov. de Caja - {{getMovimientoNombre()}}:</strong> {{dataForm.controls['numero'].value}}</p>
+                    <p>Fecha: {{dataForm.controls['fecha'].value | date: 'dd/MM/yyyy'}}</p> 
+                </div>
+            </div>
+        </div>
+        
+        <div class="row border-bottom p-10">
+            <p *ngIf="dataForm.controls['tipo'].value"><strong>TIPO:</strong> {{getTipoNombre()}}  </p>
+            <p *ngIf="dataForm.controls['concepto'].value"><strong>CONCEPTO:</strong> {{dataForm.controls['concepto'].value}}  </p>
+            <p><strong>N° ASIENTO:</strong> {{dataForm.controls['asiento'].value}} </p>
+        </div>
+        
+        <div>
+            <table class="table border">
+                <thead class="border">
+                    <tr class="">
+                        <th class=" text-align-left">CUENTAS CONTABLES</th>
+                        <th class=" text-align-center"></th>
+                        <th class=" text-align-right"></th>
+                    </tr>
+                </thead>
+                <tbody>             
+                    <tr *ngFor="let r of dataPrintCuentas; let i = index" class="">
+                        <td class=" text-align-left">{{r.cuenta}}</td>
+                        <td class=" text-align-left">{{r.nombre}}</td>
+                        <td class=" text-align-right">{{r.importe | number: '.2-2'}}</td>
+                    </tr> 
+                </tbody>
+                <tbody>             
+                    <tr class="">
+                        <td></td>
+                        <td class="text-align-right"> Total:</td>
+                        <td class="text-align-right">{{dataForm.controls['importeCuentas'].value | number: '.2-2'}}</td>
+                    </tr> 
+                </tbody>
+            </table>
+            <table class="table border">
+                <thead class="border">
+                    <tr class="border font">
+                        <th class="border text-align-left">RETENCIONES</th>
+                        <th class="border text-align-center">FECHA</th>
+                        <th class="border text-align-center">NÚMERO</th>
+                        <th class="border text-align-center">DEBE</th>
+                        <th class="border text-align-center">HABER</th>
+                    </tr>
+                </thead>
+                <tbody>             
+                    <tr *ngFor="let r of dataPrintRetenciones; let i = index" class="border">
+                        <td class="border"> {{r.retencion}}</td>
+                        <td class="border text-align-center"> {{r.fecha}}</td>
+                        <td class="border text-align-center"> {{r.comprobante}}</td>
+                        <td class="border text-align-right" > {{r.debe | number: '.2-2'}}</td>
+                        <td class="border text-align-right"> {{r.haber | number: '.2-2'}}</td>
+                    </tr> 
+                </tbody>
+            </table>
+            <table class="table" style="border-top: 1px solid grey; border-left: 1px solid grey; border-right: 1px solid grey;">
+                <thead class="border">
+                    <tr class="border font">
+                        <th class="border text-align-left">CHEQUES</th>
+                        <th class="border text-align-center">IMPORTE</th>
+                    </tr>
+                </thead>
+                <tbody>             
+                    <tr *ngFor="let r of dataPrintMonedas; let i = index">
+                        <td class="text-align-left">{{r.interno}} - {{r.nombre}} - {{r.fecha}} - {{r.cheque}}</td>
+                        <td class="text-align-right"> {{r.importe | number: '.2-2'}}</td>
+                    </tr> 
+                </tbody>
+                
+                
+                
+            </table>
+            <table class="table" style="border-bottom: 1px solid grey;">
+                <thead>
+                    <tr>
+                        <th></th>
+                        <th></th>
+                        <th></th>
+                        <th></th>
+                    </tr> 
+                        
+                </thead>
+                <tbody> 
+                    
+                    <tr>
+                        <td></td>
+                        <td></td>
+                        <td class="text-align-right">SubTotal Cta:</td>
+                        <td class="text-align-right">{{dataForm.controls['importeCuentas'].value | number: '.2-2'}}</td>
+                    </tr> 
+                    <tr>
+                        <td></td>
+                        <td></td>
+                        <td class="text-align-right">Retenciones :</td>
+                        <td class="text-align-right">{{ totalRetenciones | number: '.2-2' }}</td>
+              
+                    </tr> 
+                    <tr>
+                        <td></td>
+                        <td></td>
+                        <td class="text-align-right"><strong>TOTAL       :</strong></td>
+                        <td class="text-align-right">{{ total | number: '.2-2' }}</td>
+                    </tr> 
+                </tbody>
+            </table>
+            
+            
+        </div>
+
+    </div>
+        
+</div>

@@ -1,0 +1,71 @@
+
+.e-attr{
+    text-align: center;
+}
+
+
+.border{
+    border: 1px solid gray;
+    border-radius: 10px;
+    margin-bottom: 10px;
+    margin-top: 5px;
+}
+
+.size-label{
+    width: 80px !important;
+}
+
+.size-label-tipos{
+    width: 160px !important;
+}
+
+.size-imput-cuenta{
+    width: 170px !important;
+}
+
+.size-imput-nombre{
+    width: 400px !important;
+}
+
+.size-imput-costos{
+    width: 380px !important;
+}
+
+.size-imput-fecha{
+  width: 170px !important;
+}
+
+label{
+    color: grey;
+  }
+
+  .main-bg {
+    background: var(--main-bg) !important;
+  }
+  
+  input:focus, button:focus {
+    border: 1px solid var(--main-bg) !important;
+    box-shadow: none !important;
+  }
+  
+  .form-check-input:checked {
+    background-color: var(--main-bg) !important;
+    border-color: var(--main-bg) !important;
+  }
+  
+  .card, .btn, input{
+    border-radius:0 !important;
+  }
+
+  .boton{
+      text-align: center;
+      justify-content: center;
+  }
+
+span{
+    color: grey;
+}
+
+.visibility{
+  display: none;
+}

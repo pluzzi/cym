@@ -1,0 +1,143 @@
+<div class="row-fluid justify-content-center">
+    <div class="col-md-12">
+        <div class="card shadow bg-light">
+            <div class="card-title display inline">
+                <div class="card-header text-align-center">
+                    
+                    Listado de Retenciones
+
+                    <button class="btn btn-danger btn-sm m-0 float-end "  (click)="home()" data-bs-toggle="tooltip" data-bs-placement="top" title="Salir"> 
+                        <i class="fa fa-sign-out-alt"></i>
+                    </button>
+                </div>
+            </div>   
+            <div class="card-body">
+                <div class="row">
+                    <div class="input-group mt-2">
+                        <div class="size-label">
+                            <span class="input-group-text">Desde:</span>
+                        </div>
+                        <div class="size-imput-cuenta mr-2">
+                            <input type="date" 
+                                class="form-control" 
+                                [ngModel]="fechaInicio | date:'yyyy-MM-dd' : 'UTC'"  
+                                (ngModelChange)="setDesde($event)">
+                        </div>
+
+                        <div class="size-label">
+                            <span class="input-group-text">Hasta:</span>
+                        </div>
+                        <div class="size-imput-cuenta mr-2">
+                            <input type="date" 
+                                class="form-control" 
+                                [ngModel]="fechaFin | date:'yyyy-MM-dd' : 'UTC'"  
+                                (ngModelChange)="setHasta($event)">
+                        </div>
+                        <div class="size-label-tipos">
+                            <span class="input-group-text">Tipos de Retención:</span>
+                        </div>
+                        <div class="input-group-prepend size-imput-costos mr-2">
+                            
+                            <select class="form-control" [(ngModel)]="retencionSelected">
+                                <option [ngValue]="0">Todos</option>
+                                <option *ngFor="let r of tipos_retenciones" [ngValue]="r.codigo">{{r.retencion}}</option>
+                            </select>
+                            
+                        </div>
+                        <button class="btn btn-secondary mr-1" (click)="getInformes()" data-bs-toggle="tooltip" data-bs-placement="top" title="Buscar"> 
+                            <i class="fa fa-search"></i>
+                        </button>
+                        <button class="btn btn-primary mr-1" data-bs-toggle="tooltip" data-bs-placement="top" title="Imprimir" (click)="print()"> 
+                            <i class="fa fa-print"></i>
+                        </button>
+                        <button (click)="exportar()" class="btn btn-success  mr-1" data-bs-toggle="tooltip" data-bs-placement="top" title="Exportar a Excel"> 
+                            <i class="fa fa-file-excel"></i>
+                        </button>
+                    </div>
+                </div>
+                <div class="row mt-2">
+                   
+                    <div class="form-group mb-2">
+                        <button class="btn btn-secondary btn-sm float-end"  (click)="search()" data-bs-toggle="tooltip" data-bs-placement="top" title="Buscar"> 
+                            <i class="fa fa-search"></i>
+                        </button>
+                        <input style="width: 150px; height: 31px;" (keydown)="keyDown($event)" class="form-control float-end" placeholder="Buscar" [(ngModel)]="searchValue">
+                    </div>
+                </div>
+                
+                <ag-grid-angular
+                    style="width: 100%; height: calc(100vh - 215px);"
+                    class="ag-theme-alpine"
+                    [rowData]="retenciones"
+                    [columnDefs]="columnDefs"
+                    [defaultColDef]="defaultColDef"
+                    (gridReady)="onGridReady($event)"
+                    [rowHeight]="25"
+                    rowSelection='single'
+                    [getRowStyle]="getRowStyle">
+                </ag-grid-angular>
+                
+                
+                
+            </div>
+        
+                    
+        </div>
+    </div>
+</div>
+
+
+<div  id="print_reporte_retenciones" class="visibility">
+        
+    <div class="row text-align-right">
+        <strong>Fecha Emisión: {{fechaEmision | date: 'dd/MM/yyyy'}}</strong> 
+    </div>
+    <br>
+    
+    <div class="text-align-center ">
+        <strong>Informe de Retenciones</strong>
+    </div>
+    <br>
+    <br>
+    <div>
+        <strong>Desde: {{fechaInicio | date: 'dd/MM/yyyy'}}</strong> - <strong>Hasta: {{fechaFin | date: 'dd/MM/yyyy'}}</strong> 
+    </div>
+    <br>
+    <div>
+        <strong>Tipo de Rentención: {{ getRetencionNombre()}}</strong> 
+    </div>
+    <div class="">
+        <table class="table border">
+            <thead class="border">
+                <tr>
+                    <th class="border">Nº Movimiento</th>
+                    <th class="border">Retención</th>
+                    <th class="border">Fecha</th>
+                    <th class="border">Nº Comprobante</th>
+                    <th class="border">Importe Debe</th>
+                    <th class="border">Importe Haber</th>
+                    <th class="border">Razón Social</th>
+                    <th class="border">CUIT</th>
+                    <th class="border">Regimen</th>
+                </tr>
+            </thead>
+            <tbody>             
+                <tr *ngFor="let r of dataPrint">
+                    <td class="border font">{{r.movimiento}}</td>
+                    <td class="border font">{{r.retencionNombre}}</td>
+                    <td class="border font">{{r.fecha }}</td>
+                    <td class="border font text-align-right">{{r.comprobante}}</td>
+                    <td class="border font text-align-right">{{r.debe}}</td>
+                    <td class="border font text-align-right">{{r.haber}}</td>
+                    <td class="border font">{{r.razon}}</td>
+                    <td class="border font text-align-center">{{r.cuit}}</td>
+                    <td class="border font text-align-center">{{r.regimen}}</td>
+                </tr> 
+            </tbody>
+        </table>
+        <br>
+        <div class="row text-align-right margin-right5">
+            <strong>Total Debe: {{totalDebe | number: '.2-2'}} - Total Haber: {{totalHaber | number: '.2-2'}}</strong> 
+        </div>
+    </div>
+</div>

@@ -1,0 +1,121 @@
+.overflow{
+    overflow-y: scroll;
+    height: calc(100vh - 220px);
+}
+
+.spaces{
+    padding-left: 25px;
+    padding-right: 25px;
+}
+
+.border{
+    border: 1px solid gray;
+    border-radius: 10px;
+    margin-bottom: 10px;
+    margin-top: 5px;
+}
+
+.e-grid .e-gridheader {
+    color: black;
+    font-size: 20px;
+    
+}
+
+.contenedor{
+   justify-content: center;
+}
+
+.margin{
+    
+    margin-left: 100px !important;
+}
+
+
+.abs-center {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+.e-attr{
+    text-align: center;
+}
+
+
+.border{
+    border: 1px solid gray;
+    border-radius: 10px;
+    margin-bottom: 10px;
+    margin-top: 10px;
+    margin: 10px;
+}
+    
+.margen{
+    margin-top: 15px !important;
+}
+
+
+.main-bg {
+    background: var(--main-bg) !important;
+  }
+  
+  input:focus, button:focus {
+    border: 1px solid var(--main-bg) !important;
+    box-shadow: none !important;
+  }
+  
+  .form-check-input:checked {
+    background-color: var(--main-bg) !important;
+    border-color: var(--main-bg) !important;
+  }
+  
+  .card, .btn, input{
+    border-radius:0 !important;
+  }
+
+  .boton{
+      text-align: center;
+      justify-content: center;
+  }
+
+span{
+    color: grey;
+}
+
+
+.border{
+  border: 1px solid gray;
+  border-radius: 10px;
+}
+
+.margen{
+  margin-top: 15px !important;
+}
+
+
+.main-bg {
+  background: var(--main-bg) !important;
+}
+
+input:focus, button:focus {
+  border: 1px solid var(--main-bg) !important;
+  box-shadow: none !important;
+}
+
+.form-check-input:checked {
+  background-color: var(--main-bg) !important;
+  border-color: var(--main-bg) !important;
+}
+
+.card, .btn, input{
+  border-radius:0 !important;
+}
+
+.boton{
+    text-align: center;
+    justify-content: center;
+}
+
+span{
+  color: grey;
+}

@@ -1,0 +1,58 @@
+<div class="container mt-3">
+    <div class="row justify-content-center">
+      <div class="col-md-12">
+        <div class="card shadow bg-light">
+            <div class="card-header text-align-center">
+                Control de Accesos                
+                <button class="btn btn-danger btn-small btn-sm m-0 float-end " (click)="home()" data-bs-toggle="tooltip" data-bs-placement="top" title="Salir"> 
+                    <i class="fa fa-sign-out-alt"></i>
+                </button>
+                <button [disabled]="!usuarioSelected" class="btn btn-secondary btn-sm m-0 float-end mx-3" data-bs-toggle="tooltip" data-bs-placement="top" title="Copiar Permisos" data-bs-toggle="modal" data-bs-target="#modalCopy">
+                    <i class="fa fa-copy fa-lg"></i>
+                </button>
+            </div>
+            
+            <div class="card-body">
+                <div class="row justify-content-center">
+                    <div class="offset-md-1 col-md-4 border">
+                        <div class="m-1 text-align-center title">
+                            <label>Usuarios</label>
+                        </div>
+            
+                        <div class="overflow spaces">
+                            <ejs-grid
+                                [allowFiltering]='true'
+                                [filterSettings]="filterSettings"
+                                [dataSource]='usuarios'
+                                (click)='onRowClick($event)'>
+                                <e-columns>
+                                    <e-column field='usuario' textAlign="Left" headerText='Nombre de usuario' headerTextAlign='Center' ></e-column>
+                                </e-columns>
+                            </ejs-grid>
+                        </div>
+                        
+                    </div>
+                        
+                    <div class="col-md-6 border">
+                        <div class="m-1 text-align-center title">
+                            <label>Permisos</label>
+                        </div>
+            
+                        <div class="overflow spaces">
+                            <ejs-treeview
+                                id='treeelement'
+                                [fields]='field'
+                                [showCheckBox]='showCheckBox'
+                                (nodeChecked)='nodeChecked($event)'>
+            
+                            </ejs-treeview>
+                        </div>
+                        
+                    </div>
+                </div>
+            </div>
+            
+        </div>
+      </div>
+    </div>
+</div>

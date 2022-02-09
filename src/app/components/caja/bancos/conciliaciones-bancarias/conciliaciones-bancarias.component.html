@@ -1,0 +1,257 @@
+
+<div class="row-fluid justify-content-center">
+    <div class="col-md-12">
+        <div class="card shadow bg-light">
+            <div class="card-title display inline">
+                <div class="card-header text-align-center">
+                    Conciliaciones Bancarias
+                    <button class="btn btn-danger btn-sm m-0 float-end "  (click)="home()" data-bs-toggle="tooltip" data-bs-placement="top" title="Salir"> 
+                        <i class="fa fa-sign-out-alt"></i>
+                    </button>
+                </div>
+            </div>   
+            <div class="card-body">
+                               
+                <div class="row mb-1">
+                    
+                    <div class="input-group">
+                        
+                        <div class="input-group input-group-sm mr-1 size-moneda">
+                            <span class="input-group-text">Moneda:</span>
+                            <select class="form-control" [(ngModel)]="monedaSelected" (change)="getResumenes()"  (change)="refreshGrillas()">
+                                <option *ngFor="let t of tipos_moneda_banco_propio" [ngValue]="t.codigo">{{t.codigo}} - {{t.nombre}}</option>
+                            </select>
+                        </div>
+                        <div class="input-group input-group-sm size-resumenes">
+                            <span class="input-group-text" id="inputGroup-sizing-sm">Resumenes:</span>
+                            <select class="form-control" [(ngModel)]="resumenSelected" (ngModelChange)="resumenSelected"  (change)="getConciliados(); getNoConciliados()">
+                                <option [ngValue]="r" *ngFor="let r of resumenes">{{r.resumen}}</option>
+                            </select>
+                        </div>
+                        <div class="input-group-prepend input-group-sm size-resumen">
+                            <span class="input-group-text">Resumen:</span>
+                        </div>
+                        <div class="input-group-prepend input-group-sm size-cliente-input">
+                            <input [(ngModel)]="resumenSelected.resumen" class="form-control disabled" maxlength="20">
+                        </div>
+                        <div class="input-group input-group-sm mr-1 size-fecha">
+                            <span class="input-group-text" id="inputGroup-sizing-sm">Desde:</span>
+                            <input  type="date" 
+                                    class="form-control disabled" 
+                                    [ngModel]="resumenSelected.desde | date:'yyyy-MM-dd' : 'UTC'"  
+                                    (ngModelChange)="setDesde($event)">
+                        </div>
+                        <div class="input-group input-group-sm mr-1 size-fecha">
+                            <span class="input-group-text" id="inputGroup-sizing-sm">Hasta:</span>
+                            <input  type="date" 
+                                    class="form-control disabled" 
+                                    [ngModel]="resumenSelected.hasta | date:'yyyy-MM-dd' : 'UTC'"  
+                                    (ngModelChange)="setHasta($event)">
+                        </div>
+                                                
+                        <button class="btn btn-primary btn-sm size-button mr-1" (click)="getConciliados()" data-bs-toggle="tooltip" data-bs-placement="top" title="Buscar"> 
+                            <i class="fa fa-search"></i>
+                        </button>
+                        <button [disabled]="monedaSelected == 0 " class="btn btn-success btn-sm size-button mr-1" (click)="add()" data-bs-toggle="tooltip" data-bs-placement="top" title="Nuevo Resumen"> 
+                            <i class="fa fa-file-alt"></i>
+                        </button>
+                        <button class="btn btn-secondary btn-sm size-button mr-1" (click)="print()" data-bs-toggle="tooltip" data-bs-placement="top" title="Imprimir"> 
+                            <i class="fa fa-print"></i>
+                        </button>
+                        
+                    </div>
+                </div>
+                
+                <ag-grid-angular
+                    style="width: 100%; height: 200px"
+                    class="ag-theme-alpine"
+                    [rowData]="noConciliados"
+                    [columnDefs]="columnDefsGrilla1"
+                    [defaultColDef]="defaultColDef"
+                    (gridReady)="onGridReadyGrilla1($event)"
+                    rowSelection='single'
+                    [rowHeight]="20"
+                    [getRowStyle]="getRowStyle"
+                    rowSelection='single'
+                    
+                    >
+                </ag-grid-angular>
+                <div class="row mb-1 mt-1">
+                    <div class="col-md-12">
+                        
+                        <div class="col-md-12">
+                            <button [disabled]="resumenSelected.resumen == undefined"  (click)="preguntarGuardar()" class="btn btn-primary btn-sm size-button mb-2  mt-2 mr-3" data-bs-toggle="tooltip" data-bs-placement="top" title="Guardar"> 
+                                <i class="fa fa-save"></i>
+                            </button>
+                            <button [disabled]="resumenSelected.resumen == undefined"  (click)="eliminarResumen()" class="btn btn-danger btn-sm size-button mb-2  mt-2 mr-3"  data-bs-toggle="tooltip" data-bs-placement="top" title="Eliminar"> 
+                                <i class="fa fa-trash-alt"></i>
+                            </button>
+                            <button [disabled]="resumenSelected.resumen == undefined" class="btn btn-success btn-sm size-button mb-2  mt-2" (click)="exportar()" data-bs-toggle="tooltip" data-bs-placement="top" title="Exportar a Excel"> 
+                                <i class="fa fa-file-excel"></i>
+                            </button>
+                            <button [disabled]="resumenSelected.resumen == undefined" (click)="desconciliar()" class="btn btn-danger  btn-sm size-button float-end mb-2  mt-2"  data-bs-toggle="tooltip" data-bs-placement="top" title="Desconciliar"> 
+                                <i class="fa fa-arrow-circle-up"></i>
+                            </button>
+                            <button [disabled]="resumenSelected.resumen == undefined" (click)="insertar()" class="btn btn-primary  btn-sm size-button float-end mb-2 mr-3 mt-2 " data-bs-toggle="tooltip" data-bs-placement="top" title="Insertar"> 
+                                <i class="fa fa-arrow-circle-down"></i>
+                            </button>
+                        </div>
+                        
+                        
+                    </div>
+
+                </div>
+                <ag-grid-angular
+                    style="width: 100%; height: calc(100vh - 410px)"
+                    class="ag-theme-alpine "
+                    [rowData]="conciliados"
+                    [columnDefs]="columnDefsGrilla2"
+                    [defaultColDef]="defaultColDef"
+                    (gridReady)="onGridReadyGrilla2($event)"
+                    rowSelection='single'
+                    [rowHeight]="20"
+                    [getRowStyle]="getRowStyle"
+                    (cellKeyPress)="onCellKeyPressConciliaciones($event)"
+                    [enableFilter]="false"
+                                   
+                    >
+                </ag-grid-angular>
+                
+            
+            </div>
+        
+                    
+        </div>
+    </div>
+</div>
+
+<div  id="print_conciliaciones" class="visibility">
+        
+    <div class="row text-align-right">
+        <strong>Fecha Emisión: {{fechaEmision | date: 'dd/MM/yyyy'}}</strong> 
+    </div>
+    <div class="text-align-left ">
+        <strong>CYM Materiales S.A.</strong>
+    </div>
+    
+    <div class="text-align-center ">
+        <strong>Conciliación Bancaria</strong>
+    </div>
+    
+    <div>
+        <strong>Moneda: {{ getMonedaNombre()}}</strong> - <strong>{{monedaSelected}}</strong> 
+        
+    </div>
+    
+    <div>
+        
+        <strong>Resumen: {{ resumenSelected.resumen}}</strong>
+    </div>
+    
+    <div>
+        <strong>Período: {{resumenSelected.desde | date: 'dd/MM/yyyy'}} al {{resumenSelected.hasta | date: 'dd/MM/yyyy'}}</strong> 
+    </div>
+    <br>
+    <div class="">
+        <table class="table border">
+            <thead class="border">
+                <tr class="border andres">
+                    <th class="border ">Item</th>
+                    <th class="border fontSmall">F.Conciliación</th>
+                    <th class="border fontSmall">F.Acreditación</th>
+                    <th class="border fontSmall">Egresos/Acreditaciones</th>
+                    <th class="border">Debe</th>
+                    <th class="border">Haber</th>
+                    <th class="border">Saldo</th>
+                    <th class="border">Destino</th>
+                    <th class="border">Asiento</th>
+                    
+                </tr>
+            </thead>
+            <tbody>             
+                <tr *ngFor="let r of dataPrint; let i = index" class="border">
+                    <td class="font border" *ngIf="i != 0">{{i}}</td>
+                    <td class="font border text-align-center">{{r.fechaConciliacion}}</td>
+                    <td class="font border text-align-center">{{r.fechaAcreditacion }}</td>
+                    <td class="fontSmall border">{{r.descripcion}}</td>
+                    <td class="font border text-align-right">{{r.debe | number: '.2-2'}}</td>
+                    <td class="font border text-align-right">{{r.haber | number: '.2-2'}}</td>
+                    <td class="font border text-align-right" [ngClass]="{'negrita' : r.saldo?.length}">{{r?.saldo | number: '.2-2'}}</td>
+                    <td class="fontSmall border"> {{ r.nombreProveedor}}</td>
+                    <td class="font border text-align-center">{{r.asiento}}</td>
+                    
+                </tr> 
+            </tbody>
+            
+        </table>
+        <div class="row font mt-10 text-align-right">
+           <label class="negrita">Total:</label> {{saldo | number: '.2-2'}} 
+        </div>
+        
+        
+    </div>
+</div>
+
+
+<ng-template #modal let-modal>
+    <div class="modal-header">
+        <h5 class="modal-title text-align-center">Agregar Nuevo Resumen</h5>
+        <button type="button" class="btn-close" (click)="modal.dismiss('Cross click')"></button>
+    </div>
+  
+    <div class="modal-body p-3">
+        <form [formGroup]="nuevoResumenForm">
+            <div class="row mb-3">
+                <div class="form-group col-md-6"  >
+                    <div class="input-group input-group-sm">
+                        <span class="input-group-text">Resumen:</span>
+                        <input maxlength="20" type="text" class="form-control" formControlName="nuevoResumen" required
+                        >
+                                          
+                    </div>
+                    
+                </div>
+    
+            </div>
+            <div class="row mb-2">
+                    
+                <div class="form-group col-md-6">
+                    <div class="input-group input-group-sm">
+                        <span class="input-group-text">Desde:</span>
+                        <input 
+                            class="form-control" 
+                            type="date" 
+                            formControlName="nuevoResumenFechaDesde"
+                            required
+                            >
+                    </div>
+                    
+                </div>
+                
+                <div class="form-group col-md-6">
+                    <div class="input-group input-group-sm">
+                        <span class="input-group-text">Hasta:</span>
+                        <input 
+                            class="form-control" 
+                            type="date" 
+                            formControlName="nuevoResumenFechaHasta" 
+                            required>
+                    </div>
+                    
+                </div>
+                
+            </div>
+        </form>
+    </div>
+  
+    <div class="modal-footer">
+        <button  [disabled]="nuevoResumenForm.invalid" (click)="saveNuevoResumen(); modal.close('Save click');" class="btn btn-primary btn-size mx-2" data-bs-toggle="tooltip" data-bs-placement="top" title="Guardar"> 
+            <i class="fa fa-save"></i>
+        </button>
+        <button (click)="modal.close('Save click')" class="btn btn-danger btn-size mx-2" data-bs-toggle="tooltip" data-bs-placement="top" title="Salir"> 
+            <i class="fa fa-sign-out-alt"></i>
+        </button>
+    </div>
+  
+</ng-template>
+

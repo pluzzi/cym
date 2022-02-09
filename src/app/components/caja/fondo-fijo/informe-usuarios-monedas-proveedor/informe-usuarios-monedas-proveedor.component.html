@@ -1,0 +1,175 @@
+
+<div class="row-fluid justify-content-center">
+    <div class="col-md-12">
+        <div class="card shadow bg-light">
+            <div class="card-title display inline">
+                <div class="card-header text-align-center">
+                    Informe de Usuarios Monedas - Proveedor
+                    <button class="btn btn-danger btn-sm m-0 float-end "  (click)="home()" data-bs-toggle="tooltip" data-bs-placement="top" title="Salir"> 
+                        <i class="fa fa-sign-out-alt"></i>
+                    </button>
+                </div>
+            </div>   
+            <div class="card-body">
+                               
+                <div class="row">
+                    
+                    <div class="input-group">
+                        <div class="input-group input-group-sm  mr-1 size-opciones">
+                            <span class="input-group-text">Opciones:</span>
+                            <select class="form-control" [(ngModel)]="tipoSelected">
+                                <option [ngValue]="t.tipo" *ngFor="let t of tipos">{{t.descripcion}}</option>
+                            </select>
+                        </div>
+                        <div class="input-group input-group-sm  mr-1 size-fecha">
+                            <span class="input-group-text" id="inputGroup-sizing-sm">Desde:</span>
+                            <input  type="date" 
+                                    class="form-control" 
+                                    [ngModel]="desde | date:'yyyy-MM-dd' : 'UTC'"  
+                                    (ngModelChange)="setDesde($event)"  
+                                    aria-label="Sizing example input" 
+                                    aria-describedby="inputGroup-sizing-sm">
+                        </div>
+                        <div class="input-group input-group-sm  mr-1 size-fecha">
+                            <span class="input-group-text" id="inputGroup-sizing-sm">Hasta:</span>
+                            <input  type="date" 
+                                    class="form-control" 
+                                    [ngModel]="hasta | date:'yyyy-MM-dd' : 'UTC'"  
+                                    (ngModelChange)="setHasta($event)"  
+                                    aria-label="Sizing example input" 
+                                    aria-describedby="inputGroup-sizing-sm">
+                        </div>
+                        <div *ngIf="tipoSelected < 2" class="input-group input-group-sm  mr-1 size-usuarios">
+                            <span class="input-group-text">Usuario:</span>
+                            <select class="form-control"  [(ngModel)]="usuarioSelected">
+                                <option [ngValue]="u.codigo" *ngFor="let u of usuarios">{{u.nombre}}</option>
+                            </select>
+                        </div>
+                        <div *ngIf="tipoSelected < 2" class="input-group input-group-sm mr-2 size-moneda">
+                            <span class="input-group-text" id="inputGroup-sizing-sm">Moneda:</span>
+                            <select class="form-control" [(ngModel)]="monedaSelected">
+                                <option *ngFor="let t of tipos_moneda" [ngValue]="t.codigo">{{t.codigo}} - {{t.nombre}}</option>
+                            </select>
+                        </div>
+                        <div *ngIf="tipoSelected > 1" class="input-group-prepend input-group-sm size-importe">
+                            <span class="input-group-text">Proveedor:</span>
+                        </div>
+                        <div *ngIf="tipoSelected > 1" class="input-group-prepend input-group-sm size-input-proveedorCodigo">
+                            <input  [(ngModel)]="proveedorSelected" (keydown)="proveedorKeydown($event)" type="text" class="form-control mr-1">
+                        </div>
+                        <div *ngIf="tipoSelected > 1" class="input-group-prepend input-group-sm mr-2 size-input-proveedorNombre">
+                            <input [(ngModel)]="nombreProveedor" type="text" class="form-control disabled">
+                        </div>
+                                                                      
+                        <button class="btn btn-primary btn-sm size-button mr-1" (click)="getInformesUsuariosMonedaProveedor()" data-bs-toggle="tooltip" data-bs-placement="top" title="Buscar"> 
+                            <i class="fa fa-search"></i>
+                        </button>
+                        <button class="btn btn-secondary btn-sm size-button mr-1" (click)="print()" data-bs-toggle="tooltip" data-bs-placement="top" title="Imprimir"> 
+                            <i class="fa fa-print"></i>
+                        </button>
+                        <button class="btn btn-success btn-sm size-button mr-1" (click)="exportar()" data-bs-toggle="tooltip" data-bs-placement="top" title="Exportar a Excel"> 
+                            <i class="fa fa-file-excel"></i>
+                        </button>
+                        
+                        
+                                              
+                    </div>
+                </div>
+                
+                <div class="row mt-1">
+                    <div class="form-group mb-1">
+                        <button class="btn btn-secondary btn-sm float-end"  (click)="search()" data-bs-toggle="tooltip" data-bs-placement="top" title="Buscar"> 
+                            <i class="fa fa-search"></i>
+                        </button>
+                        <input style="width: 190px; height: 31px;" (keydown)="keyDown($event)" class="form-control float-end" placeholder="Buscar" [(ngModel)]="searchValue">
+                    </div>
+                </div>
+                
+               
+                                
+                <ag-grid-angular
+                    style="width: 100%; height: calc(100vh - 200px); "
+                    class="ag-theme-alpine"
+                    [rowData]="InformeUsuarios"
+                    [columnDefs]="columnDefs"
+                    [defaultColDef]="defaultColDef"
+                    (gridReady)="onGridReady($event)"
+                    rowSelection='single'
+                    [rowHeight]="20"
+                    [getRowStyle]="getRowStyle"
+                    >
+                </ag-grid-angular>
+                <!--<div class="row">
+                    <div class="offset-md-10 col-md-2 mt-1 mb-1">
+                        <div class="input-group">
+                            <div class="input-group input-group-sm">
+                                <span class="input-group-text">Total General:</span>
+                                <input [(ngModel)]="total" class="form-control disabled text-align-right">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                -->
+                
+             
+            </div>
+        
+                    
+        </div>
+    </div>
+</div>
+
+<div  id="print_informe_usuarios_fondo" class="visibility">
+        
+    <div class="row text-align-right">
+        <strong>Fecha Emisión: {{fechaEmision | date: 'dd/MM/yyyy'}}</strong> 
+    </div>
+    <br>
+    
+    <div class="text-align-center ">
+        <strong>Informe de Usuarios Monedas - Proveedor</strong>
+    </div>
+    <br>
+    <br>
+    <div>
+        <strong>Desde: {{desde | date: 'dd/MM/yyyy'}}</strong> - <strong>Hasta: {{hasta | date: 'dd/MM/yyyy'}}</strong> 
+    </div>
+    <br>
+    <div>
+        <strong>Opciones: {{getTipoNombre()}}</strong> <strong *ngIf="tipoSelected < 2"> - Usuario: {{getUsuariosNombre()}} - Moneda: {{getMonedaNombre()}}</strong><strong *ngIf="tipoSelected > 1">: {{nombreProveedor}}</strong>
+    </div>
+    
+    <br>
+    <br>
+    <div class="">
+        <table class="table border">
+            <thead class="border">
+                <tr>
+                    <th class="border">Planilla</th>
+                    <th class="border">Estado</th>
+                    <th class="border">Nombre Concepto</th>
+                    <th class="border">Comprobante</th>
+                    <th class="border">Proveedor</th>
+                    <th class="border">Destino</th>
+                    <th class="border">Importe</th>
+
+                </tr>
+            </thead>
+            <tbody>             
+                <tr *ngFor="let r of dataPrint">
+                    <td class="border font">{{r.planilla}}</td>
+                    <td class="border font">{{r.estado}}</td>
+                    <td class="border font">{{r.descripcionConcepto}}</td>
+                    <td class="border font">{{r.comprobante}}</td>
+                    <td class="border font">{{r.nombre}}</td>
+                    <td class="border font">{{r.destino}}</td>
+                    <td class="border font">{{r.importe | number: '.2-2'}}</td>
+                </tr> 
+            </tbody>
+        </table>
+        <br>
+        <div class="row text-align-right">
+            <strong>Total General: {{total | number: '.2-2'}}</strong> 
+        </div>
+    </div>
+</div>
